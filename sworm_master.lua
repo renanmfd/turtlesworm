@@ -15,9 +15,9 @@ local MASTER_TURTLES      = 5
 
 local origin = nil
 local state = "serving" -- "serving" "retriving" "placing" "setting"
-local chunkCount = 0	  -- Number of chunks mined (chunk loader used).
+local chunkCount = 0    -- Number of chunks mined (chunk loader used).
 local chunkThird = 0    -- How many 1/3 of chunk mined.
-local spotCount  = 0		-- Number of spots mined.
+local spotCount  = 0    -- Number of spots mined.
 
 -- file handler
 
@@ -31,35 +31,35 @@ local initialChannel = 100
 -- PRIVATE functions ----------------------------------------------------------
 
 local function saveState()
-	f = fs.open(file , "w")
-	f.writeLine(state)
+  f = fs.open(file , "w")
+  f.writeLine(state)
   f.writeLine(origin.x)
   f.writeLine(origin.y)
   f.writeLine(origin.z)
-	f.writeLine(tostring(chunkCount))
+  f.writeLine(tostring(chunkCount))
   f.writeLine(tostring(chunkThird))
-	f.writeLine(tostring(spotCount))
-	f.close()
+  f.writeLine(tostring(spotCount))
+  f.close()
 end
 
 -------------------------------------------------------------------------------
 
 local function loadState()
   local x, y, z
-	if not fs.exists(file) then 
-		return false
-	end
-	f = fs.open(file, "r")
-	state = f.readLine()
+  if not fs.exists(file) then 
+    return false
+  end
+  f = fs.open(file, "r")
+  state = f.readLine()
   x = tonumber(f.readLine())
   y = tonumber(f.readLine())
   z = tonumber(f.readLine())
   origin = vector.new(x, y, z)
-	chunkCount = tonumber(f.readLine())
+  chunkCount = tonumber(f.readLine())
   chunkThird = tonumber(f.readLine())
-	spotCount = tonumber(f.readLine())
-	f.close()
-	return true
+  spotCount = tonumber(f.readLine())
+  f.close()
+  return true
 end
 
 -------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ getNextSpot = function ()
   spotCount = spotCount + 1
 
   -- If all spots on the 1/3 of chunk got mined, move to the next 1/3.
-  if spotCount > getSpotMax() then
+  if spotCount >= getSpotMax() then
     spotCount = 0
     chunkThird = chunkThird + 1
   end
@@ -158,18 +158,18 @@ end
 -------------------------------------------------------------------------------
 
 placeChunkLoader = function ()
-	turtle.digUp()
-	turtle.select(MASTER_CHUNKLOADERS)
-	turtle.placeUp()
-	turtle.select(MASTER_TURTLES)
+  turtle.digUp()
+  turtle.select(MASTER_CHUNKLOADERS)
+  turtle.placeUp()
+  turtle.select(MASTER_TURTLES)
 end
 
 -------------------------------------------------------------------------------
 
 rescueChunkLoader = function ()
-	turtle.select(MASTER_CHUNKLOADERS)
-	turtle.digUp()
-	turtle.select(MASTER_TURTLES)
+  turtle.select(MASTER_CHUNKLOADERS)
+  turtle.digUp()
+  turtle.select(MASTER_TURTLES)
 end
 
 -------------------------------------------------------------------------------
@@ -181,7 +181,7 @@ goToNextChunk = function ()
   sworm_api.moveTo(origin)
 
   -- Get direction vector based on facing direction.
-	if facing == sworm_api.DIRECTION_NORTH then
+  if facing == sworm_api.DIRECTION_NORTH then
     newChunkDirection = vector.new(0, 0, -16)
   elseif facing == sworm_api.DIRECTION_SOUTH then
     newChunkDirection = vector.new(0, 0, 16)
@@ -205,32 +205,32 @@ goToNextChunk = function ()
   sworm_api.moveTo(newChunkPosition)
   origin = newChunkPosition
 
-	print("Done chunk move")
+  print("Done chunk move")
 end
 
 -------------------------------------------------------------------------------
 
 setupSlaveInventory = function ()
-	-- Same order as inventory on slavescode.
-	turtle.select(TURTLE_SLOT_FUEL)
-	turtle.dropDown(1)
-	turtle.select(TURTLE_SLOT_UNLOAD)
-	turtle.dropDown(1)
-	turtle.select(TURTLE_SLOT_BUCKET)
-	turtle.dropDown(1)
+  -- Same order as inventory on slavescode.
+  turtle.select(TURTLE_SLOT_FUEL)
+  turtle.dropDown(1)
+  turtle.select(TURTLE_SLOT_UNLOAD)
+  turtle.dropDown(1)
+  turtle.select(TURTLE_SLOT_BUCKET)
+  turtle.dropDown(1)
 end
 
 -------------------------------------------------------------------------------
 
 initChunkloader = function ()
-	-- Make sure we can place the chunk loader at the top and place it.
-	if turtle.detectUp() then
-		if not turtle.digUp() then
-			print("Error: Master's top not clear.")
-		end
-	end
-	turtle.select(MASTER_CHUNKLOADERS)
-	turtle.placeUp()
+  -- Make sure we can place the chunk loader at the top and place it.
+  if turtle.detectUp() then
+    if not turtle.digUp() then
+      print("Error: Master's top not clear.")
+    end
+  end
+  turtle.select(MASTER_CHUNKLOADERS)
+  turtle.placeUp()
   turtle.select(MASTER_TURTLES)
 end
 
@@ -239,107 +239,107 @@ end
 setupSlaves = function ()
   local timeout, spot, nextChunk
 
-	-- Open connection to attached wireless modem and open chanel.
-	modem.open(initialChannel)
-	-- print("Receive channel " .. initialChannel .. " is open")
+  -- Open connection to attached wireless modem and open chanel.
+  modem.open(initialChannel)
+  -- print("Receive channel " .. initialChannel .. " is open")
 
-	-- Loop through all slave turtle inventories.
-	for i = MASTER_TURTLES , 16 do
-		turtle.select(i)
+  -- Loop through all slave turtle inventories.
+  for i = MASTER_TURTLES , 16 do
+    turtle.select(i)
 
-		-- Check if there is only on item (turtle) in the slot. If empty, skip.
-		if turtle.getItemCount(i) ~= 1 then
-			-- print("Skipping inventory slot " .. i)
-			break
-		end
+    -- Check if there is only on item (turtle) in the slot. If empty, skip.
+    if turtle.getItemCount(i) ~= 1 then
+      -- print("Skipping inventory slot " .. i)
+      break
+    end
     state = "setting"
 
-		-- Place the slave turtle at the bottom.
-		-- print("Placing Turtle " .. (i - MASTER_TURTLES + 1))
-		turtle.placeDown()
+    -- Place the slave turtle at the bottom.
+    -- print("Placing Turtle " .. (i - MASTER_TURTLES + 1))
+    turtle.placeDown()
     sleep(0.5)
 
-		-- Check if the turtle is at the bottom.
-		if peripheral.isPresent("bottom") then
-			-- Turn on slave turtle.
-			-- print("---> Turtle")
-			peripheral.wrap("bottom").turnOn()
+    -- Check if the turtle is at the bottom.
+    if peripheral.isPresent("bottom") then
+      -- Turn on slave turtle.
+      -- print("---> Turtle")
+      peripheral.wrap("bottom").turnOn()
 
-			-- Connect to slave and wait response.
-			-- print("Waiting for slave response")
-			timeout = 0
-			event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
-			while msg ~= "ready" do
-				event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
-				timeout = timeout + 1
-				if timeout > 20 then
-				    turtle.digDown()
-					return
-				end
-				print("No response. Retry in 1 sec.")
-				sleep(1)
-			end
+      -- Connect to slave and wait response.
+      -- print("Waiting for slave response")
+      timeout = 0
+      event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+      while msg ~= "ready" do
+        event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+        timeout = timeout + 1
+        if timeout > 20 then
+            turtle.digDown()
+          return
+        end
+        print("No response. Retry in 1 sec.")
+        sleep(1)
+      end
 
-			-- Setup slave.
-			-- print("Response received. Seting him up to mine.")
-			setupSlaveInventory()
-			channel = reply
+      -- Setup slave.
+      -- print("Response received. Seting him up to mine.")
+      setupSlaveInventory()
+      channel = reply
 
-			-- Sending all set message.
-			-- print("Sending 'all set' message CH:" .. channel)
-			modem.transmit(channel, 0, channel)
+      -- Sending all set message.
+      -- print("Sending 'all set' message CH:" .. channel)
+      modem.transmit(channel, 0, channel)
 
-			modem.open(channel)
-			timeout = 0
-			event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
-			while reply ~= channel do
-				event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
-				timeout = timeout + 1
-				if timeout > 20 then
-				    turtle.digDown()
-					return
-				end
-				print("No response. Retry in 2 sec.")
-				sleep(2)
-			end
+      modem.open(channel)
+      timeout = 0
+      event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+      while reply ~= channel do
+        event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+        timeout = timeout + 1
+        if timeout > 20 then
+            turtle.digDown()
+          return
+        end
+        print("No response. Retry in 2 sec.")
+        sleep(2)
+      end
 
-			-- Send the first mine spot to the slave.
-			-- print("Slave requesting spot")
-			spot, nextChunk = getNextSpot()
-			modem.transmit(channel, 0, spot)
-			print("Slave " .. channel .. " started (" .. spotCount .. ") x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
+      -- Send the first mine spot to the slave.
+      -- print("Slave requesting spot")
+      spot, nextChunk = getNextSpot()
+      modem.transmit(channel, 0, spot)
+      print("Slave " .. channel .. " started (" .. spotCount .. ") x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
       
       -- Make sure we don't close the channels.
       -- modem.close(channel)
 
-			sleep(5)
-		else
-			print("Error: Turtle not present at the bottom.")
-		end
-		print("---------------------------------")
-	end
+      sleep(5)
+    else
+      print("Error: Turtle not present at the bottom.")
+    end
+    print("---------------------------------")
+  end
 
-	modem.close(initialChannel)
+  modem.close(initialChannel)
 end
 
 -------------------------------------------------------------------------------
 
 attendRequests = function ()
   local spot, nextChunk
-	local event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+  local event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
   state = "serving"
 
-	if msg == "request" then
-		local spot, nextChunk = getNextSpot()
-		print("Slave " .. reply .. ", job on x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
-		modem.transmit(reply, 0, spot)
+  if msg == "request" then
+    local spot, nextChunk = getNextSpot()
+    print("Slave " .. reply .. ", job on x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
+    modem.transmit(reply, 0, spot)
 
     if nextChunk then
       state = "moving"
-	    goToNextChunk()
+      goToNextChunk()
       chunkCount = chunkCount + 1
     end
-	end
+  end
 end
 
 -------------------------------------------------------------------------------
@@ -350,18 +350,18 @@ main = function ()
   sworm_api.up()
 
   origin = sworm_api.getPosition()
-	modem = peripheral.find("modem")
+  modem = peripheral.find("modem")
 
   if turtle.getFuelLevel() < 10 then
-		sworm_api.refuel()
-	end
+    sworm_api.refuel()
+  end
 
-	if not loadState() then
-		print("Master started. Ready to command!")
-		initChunkloader()
-	else
-		print("State loaded. Resuming command!")
-		sleep(5)
+  if not loadState() then
+    print("Master started. Ready to command!")
+    initChunkloader()
+  else
+    print("State loaded. Resuming command!")
+    sleep(5)
 
     -- Break any turtle not completly set and restart setting.
     if state == "setting" then
@@ -371,13 +371,13 @@ main = function ()
       sworm_api.moveTo(origin)
       goToNextChunk()
     end
-	end
+  end
 
-	while true do
-	  setupSlaves()
+  while true do
+    setupSlaves()
     state = "serving"
-		attendRequests()
-	end
+    attendRequests()
+  end
 end
 
 os.loadAPI("sworm_api")

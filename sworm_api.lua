@@ -41,27 +41,27 @@ local position = nil
 
 -------------------------------------------------------------------------------
 getFacing = function ()
-	return facing
+  return facing
 end
 
 -------------------------------------------------------------------------------
 getPosX = function ()
-	return position.x
+  return position.x
 end
 
 -------------------------------------------------------------------------------
 getPosY = function ()
-	return position.y
+  return position.y
 end
 
 -------------------------------------------------------------------------------
 getPosZ = function ()
-	return position.z
+  return position.z
 end
 
 -------------------------------------------------------------------------------
 getPosition = function ()
-	return position
+  return position
 end
 
 -- ============================================================================
@@ -150,7 +150,7 @@ refuel = function ()
   if turtle.detect() then
     if not turtle.dig() then
       log('Bedrock stop - refuel()', LOG_ERROR)
-	  return
+    return
     end
   end
   turtle.select(TURTLE_SLOT_FUEL)
@@ -312,32 +312,32 @@ f = forward
 nforward = function (num)
     local i 
 
-	if num < 0 then
-		message("Invalid number - nforward(num) =" .. num)
-		return false
-	elseif num == 0 then
-		return true
-	end
+  if num < 0 then
+    message("Invalid number - nforward(num) =" .. num)
+    return false
+  elseif num == 0 then
+    return true
+  end
 
-	-- If moving a lot forward, lets travel one level above.
-	if num > 5 then
-		forward()
-		up()
+  -- If moving a lot forward, lets travel one level above.
+  if num > 5 then
+    forward()
+    up()
 
-		-- Move
-		for i = 2 , num - 1 do
-			forward()
-		end
+    -- Move
+    for i = 2 , num - 1 do
+      forward()
+    end
 
-		down()
-		forward()
-	else
-		for i = 1 , num do
-			forward()
-		end
-	end
-	return true
-end	
+    down()
+    forward()
+  else
+    for i = 1 , num do
+      forward()
+    end
+  end
+  return true
+end  
 
 -------------------------------------------------------------------------------
 -- @function down()
@@ -442,17 +442,17 @@ end
 --
 -- Turn turtle to the left.
 left = function ()
-	--print("turnLeft() facing=", facing," direction")
-	turtle.turnLeft()
-	if facing == DIRECTION_NORTH then
-		facing = DIRECTION_WEST
-	elseif facing == DIRECTION_SOUTH then
-		facing = DIRECTION_EAST
-	elseif facing == DIRECTION_EAST then
-		facing = DIRECTION_NORTH
-	elseif facing == DIRECTION_WEST then
-		facing = DIRECTION_SOUTH
-	else 
+  --print("turnLeft() facing=", facing," direction")
+  turtle.turnLeft()
+  if facing == DIRECTION_NORTH then
+    facing = DIRECTION_WEST
+  elseif facing == DIRECTION_SOUTH then
+    facing = DIRECTION_EAST
+  elseif facing == DIRECTION_EAST then
+    facing = DIRECTION_NORTH
+  elseif facing == DIRECTION_WEST then
+    facing = DIRECTION_SOUTH
+  else 
     log("Invalid facing direction (" .. facing .. ")", LOG_ERROR)
   end
 end
@@ -462,17 +462,17 @@ end
 --
 -- Turn turtle to the right.
 right = function ()
-	--print("turnRight() facing=", facing," direction")
-	turtle.turnRight()
-	if facing == DIRECTION_NORTH then
-		facing = DIRECTION_EAST
-	elseif facing == DIRECTION_SOUTH then
-		facing = DIRECTION_WEST
-	elseif facing == DIRECTION_EAST then
-		facing = DIRECTION_SOUTH
-	elseif facing == DIRECTION_WEST then
-		facing = DIRECTION_NORTH
-	else 
+  --print("turnRight() facing=", facing," direction")
+  turtle.turnRight()
+  if facing == DIRECTION_NORTH then
+    facing = DIRECTION_EAST
+  elseif facing == DIRECTION_SOUTH then
+    facing = DIRECTION_WEST
+  elseif facing == DIRECTION_EAST then
+    facing = DIRECTION_SOUTH
+  elseif facing == DIRECTION_WEST then
+    facing = DIRECTION_NORTH
+  else 
     log("Invalid facing direction (" .. facing .. ")", LOG_ERROR)
   end
 end
@@ -499,65 +499,65 @@ end
 --   otherwise.
 turnTo = function (dir)
   if dir == DIRECTION_NORTH then
-		if facing == DIRECTION_NORTH then
-			return true
-		elseif facing == DIRECTION_SOUTH then
-			right()
-			right()
-		elseif facing == DIRECTION_EAST then
-			left()
-		elseif facing == DIRECTION_WEST then
-			right()
-		else
+    if facing == DIRECTION_NORTH then
+      return true
+    elseif facing == DIRECTION_SOUTH then
+      right()
+      right()
+    elseif facing == DIRECTION_EAST then
+      left()
+    elseif facing == DIRECTION_WEST then
+      right()
+    else
       getDirection()
-			log("Invalid facing direction - turnTo(dir) " .. facing, LOG_ERROR)
-		end
-	elseif dir == DIRECTION_SOUTH then
-		if facing == DIRECTION_SOUTH then
-			return true
-		elseif facing == DIRECTION_NORTH then
-			right()
-			right()
-		elseif facing == DIRECTION_WEST then
-			left()
-		elseif facing == DIRECTION_EAST then
-			right()
-		else
+      log("Invalid facing direction - turnTo(dir) " .. facing, LOG_ERROR)
+    end
+  elseif dir == DIRECTION_SOUTH then
+    if facing == DIRECTION_SOUTH then
+      return true
+    elseif facing == DIRECTION_NORTH then
+      right()
+      right()
+    elseif facing == DIRECTION_WEST then
+      left()
+    elseif facing == DIRECTION_EAST then
+      right()
+    else
       getDirection()
-			log("Invalid facing direction - turnTo(dir) " .. facing, LOG_ERROR)
-		end
-	elseif dir == DIRECTION_WEST then
-		if facing == DIRECTION_WEST then
-			return true
-		elseif facing == DIRECTION_EAST then
-			right()
-			right()
-		elseif facing == DIRECTION_NORTH then
-			left()
-		elseif facing == DIRECTION_SOUTH then
-			right()
-		else
+      log("Invalid facing direction - turnTo(dir) " .. facing, LOG_ERROR)
+    end
+  elseif dir == DIRECTION_WEST then
+    if facing == DIRECTION_WEST then
+      return true
+    elseif facing == DIRECTION_EAST then
+      right()
+      right()
+    elseif facing == DIRECTION_NORTH then
+      left()
+    elseif facing == DIRECTION_SOUTH then
+      right()
+    else
       getDirection()
-			log("Invalid facing direction - turnTo(dir) " .. facing, LOG_ERROR)
-		end
-	elseif dir == DIRECTION_EAST then
-		if facing == DIRECTION_EAST then
-			return true
-		elseif facing == DIRECTION_WEST then
-			right()
-			right()
-		elseif facing == DIRECTION_SOUTH then
-			left()
-		elseif facing == DIRECTION_NORTH then
-			right()
-		else
+      log("Invalid facing direction - turnTo(dir) " .. facing, LOG_ERROR)
+    end
+  elseif dir == DIRECTION_EAST then
+    if facing == DIRECTION_EAST then
+      return true
+    elseif facing == DIRECTION_WEST then
+      right()
+      right()
+    elseif facing == DIRECTION_SOUTH then
+      left()
+    elseif facing == DIRECTION_NORTH then
+      right()
+    else
       getDirection()
-			log("Invalid facing direction - turnTo(dir) " .. facing, LOG_ERROR)
-		end
-	else
-		log("Invalid goto direction - turnTo(dir) " .. dir, LOG_ERROR)
+      log("Invalid facing direction - turnTo(dir) " .. facing, LOG_ERROR)
+    end
+  else
+    log("Invalid goto direction - turnTo(dir) " .. dir, LOG_ERROR)
         return false
-	end
+  end
   return true
 end
 
@@ -653,15 +653,15 @@ end
 moveTo = function (destination)
   local move_vector, i, pos
 
-	if destination == nil then 
-		log("moveTo() destination not set.", LOG_ERROR)
-		return false
-	end
+  if destination == nil then 
+    log("moveTo() destination not set.", LOG_ERROR)
+    return false
+  end
 
   log("- moveTo pos" .. position:tostring(), LOG_DEBUG)
   log("- moveTo des" .. destination:tostring(), LOG_DEBUG)
 
-	move_vector = destination:sub(position)
+  move_vector = destination:sub(position)
 
   log("- moveTo vec " .. move_vector:tostring(), LOG_DEBUG)
 
@@ -671,29 +671,29 @@ moveTo = function (destination)
     for i = 1, move_vector.y do
       up()
     end
-	elseif move_vector.y < 0 then
+  elseif move_vector.y < 0 then
     for i = 1, math.abs(move_vector.y) do
       down()
     end
-	end
+  end
 
   -- Z axis.
   log("- moveTo Z " .. move_vector.z, LOG_DEBUG)
-	if move_vector.z > 0 then
-		turnTo(DIRECTION_SOUTH)
-	elseif move_vector.z < 0 then
-		turnTo(DIRECTION_NORTH)
-	end
-	nforward(math.abs(move_vector.z))
+  if move_vector.z > 0 then
+    turnTo(DIRECTION_SOUTH)
+  elseif move_vector.z < 0 then
+    turnTo(DIRECTION_NORTH)
+  end
+  nforward(math.abs(move_vector.z))
 
   -- X axis.
   log("- moveTo X " .. move_vector.x, LOG_DEBUG)
-	if move_vector.x > 0 then
-		turnTo(DIRECTION_EAST)
-	elseif move_vector.x < 0 then
-		turnTo(DIRECTION_WEST)
-	end
-	nforward(math.abs(move_vector.x))
+  if move_vector.x > 0 then
+    turnTo(DIRECTION_EAST)
+  elseif move_vector.x < 0 then
+    turnTo(DIRECTION_WEST)
+  end
+  nforward(math.abs(move_vector.x))
 
   -- If GPS position dont match recorded position, move again.
   while not gpsCheck() do
@@ -709,7 +709,7 @@ moveTo = function (destination)
     moveTo(destination)
   end
 
-	return true
+  return true
 end
 
 -------------------------------------------------------------------------------
