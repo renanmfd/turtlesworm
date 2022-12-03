@@ -67,24 +67,43 @@ end
 function spotMapping()
   local spots = {}
 
+  -- spots[0] = {front = 0, side = 15}
+  -- spots[1] = {front = 1, side = 12}
+  -- spots[2] = {front = 0, side = 10}
+  -- spots[3] = {front = 1, side = 7}
+  -- spots[4] = {front = 0, side = 5}
+  -- spots[5] = {front = 1, side = 2}
+  -- spots[6] = {front = 0, side = 0}
+  -- spots[7] = {front = 2, side = -1}
+  -- spots[8] = {front = 3, side = 1}
+  -- spots[9] = {front = 4, side = 3}
+  -- spots[10] = {front = 2, side = 4}
+  -- spots[11] = {front = 3, side = 6}
+  -- spots[12] = {front = 4, side = 8}
+  -- spots[13] = {front = 2, side = 9}
+  -- spots[14] = {front = 3, side = 11}
+  -- spots[15] = {front = 4, side = 13}
+  -- spots[16] = {front = 2, side = 14}
+  -- spots[17] = {front = 3, side = 16}
+
   spots[0] = {front = 0, side = 15}
-  spots[1] = {front = 1, side = 12}
-  spots[2] = {front = 0, side = 10}
-  spots[3] = {front = 1, side = 7}
-  spots[4] = {front = 0, side = 5}
+  spots[1] = {front = 0, side = 10}
+  spots[2] = {front = 0, side = 5}
+  spots[3] = {front = 0, side = 0}
+  spots[4] = {front = 2, side = -1}
   spots[5] = {front = 1, side = 2}
-  spots[6] = {front = 0, side = 0}
-  spots[7] = {front = 2, side = -1}
-  spots[8] = {front = 3, side = 1}
-  spots[9] = {front = 4, side = 3}
-  spots[10] = {front = 2, side = 4}
-  spots[11] = {front = 3, side = 6}
-  spots[12] = {front = 4, side = 8}
-  spots[13] = {front = 2, side = 9}
-  spots[14] = {front = 3, side = 11}
-  spots[15] = {front = 4, side = 13}
-  spots[16] = {front = 2, side = 14}
-  spots[17] = {front = 3, side = 16}
+  spots[6] = {front = 2, side = 4}
+  spots[7] = {front = 1, side = 7}
+  spots[8] = {front = 2, side = 9}
+  spots[9] = {front = 1, side = 12}
+  spots[10] = {front = 2, side = 14}
+  spots[11] = {front = 3, side = 16}
+  spots[12] = {front = 4, side = 13}
+  spots[13] = {front = 3, side = 11}
+  spots[14] = {front = 4, side = 8}
+  spots[15] = {front = 3, side = 6}
+  spots[16] = {front = 4, side = 3}
+  spots[17] = {front = 3, side = 1}
 
   return spots
 end
@@ -98,7 +117,7 @@ getSpot = function (index)
   local spots = spotMapping()
 
   if index < 0 or index > #spots then
-    return false
+    return false, false
   end
 
   return spots[index].front, spots[index].side
@@ -122,12 +141,13 @@ getNextSpot = function ()
   spotCount = spotCount + 1
 
   -- If all spots on the 1/3 of chunk got mined, move to the next 1/3.
-  if spotCount >= getSpotMax() then
+  if spotCount > getSpotMax() then
     spotCount = 0
     chunkThird = chunkThird + 1
   end
   -- If the 3 1/3 of the chunk got mined, move to next chunk.
   if chunkThird >= 3 and spotCount >= 4 then
+    spotCount = 0
     chunkThird = 0
     nextChunk = true
   end
@@ -139,15 +159,15 @@ getNextSpot = function ()
 
   if facing == sworm_api.DIRECTION_NORTH then
     x = pos.x + spotSide
-    z = pos.z - (spotFront * chunkThird) - (chunkCount * 16)
+    z = pos.z - spotFront - (chunkThird * 5)
   elseif facing == sworm_api.DIRECTION_SOUTH then
     x = pos.x - spotSide
-    z = pos.z + (spotFront * chunkThird) + (chunkCount * 16)
+    z = pos.z + spotFront + (chunkThird * 5)
   elseif facing == sworm_api.DIRECTION_WEST then
-    x = pos.x - (spotFront * chunkThird) - (chunkCount * 16)
+    x = pos.x - spotFront - (chunkThird * 5)
     z = pos.z - spotSide
   elseif facing == sworm_api.DIRECTION_EAST then
-    x = pos.x + (spotFront * chunkThird) + (chunkCount * 16)
+    x = pos.x + spotFront + (chunkThird * 5)
     z = pos.z + spotSide
   end
 
@@ -175,10 +195,11 @@ end
 -------------------------------------------------------------------------------
 
 goToNextChunk = function ()
-  local newChunkDirection, newChunkPosition
-
-  -- Make sure we are at the origin of the chunk.
+  local newChunkDirection, newChunkPosition, facing
+  
+  -- Make sure we are at the origin.
   sworm_api.moveTo(origin)
+  facing = sworm_api.getFacing()
 
   -- Get direction vector based on facing direction.
   if facing == sworm_api.DIRECTION_NORTH then
@@ -189,9 +210,13 @@ goToNextChunk = function ()
     newChunkDirection = vector.new(-16, 0, 0)
   elseif facing == sworm_api.DIRECTION_EAST then
     newChunkDirection = vector.new(16, 0, 0)
+  else
+    print("Facing direction invalid  " .. facing)
+    error()
   end
 
-  newChunkPosition = origin.add(newChunkDirection)
+  newChunkPosition = origin:add(newChunkDirection)
+  print("goToNextChunk " .. newChunkPosition:tostring())
   
   print("Placing chunk loader")
   sworm_api.moveTo(newChunkPosition)
@@ -227,6 +252,7 @@ initChunkloader = function ()
   if turtle.detectUp() then
     if not turtle.digUp() then
       print("Error: Master's top not clear.")
+      error()
     end
   end
   turtle.select(MASTER_CHUNKLOADERS)
@@ -312,7 +338,7 @@ setupSlaves = function ()
       -- Make sure we don't close the channels.
       -- modem.close(channel)
 
-      sleep(5)
+      sleep(2)
     else
       print("Error: Turtle not present at the bottom.")
     end
@@ -347,7 +373,6 @@ end
 
 main = function ()
   sworm_api.init()
-  sworm_api.up()
 
   origin = sworm_api.getPosition()
   modem = peripheral.find("modem")

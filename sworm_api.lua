@@ -168,16 +168,16 @@ end
 --
 -- ??
 unloadInventory = function ()
-  turtle.select(TURTLE_SLOT_INVENTORY)
+  turtle.select(TURTLE_SLOT_UNLOAD)
   turtle.digUp()
   turtle.placeUp()
-  for i=turtle_inventory_start, 16 do
+  for i = TURTLE_SLOT_INVENTORY, 16 do
     turtle.select(i)
     turtle.dropUp()
   end
-  turtle.select(turtle_storage_items)
+  turtle.select(TURTLE_SLOT_UNLOAD)
   turtle.digUp()
-  turtle.select(turtle_inventory_start)
+  turtle.select(TURTLE_SLOT_INVENTORY)
 end
 
 -------------------------------------------------------------------------------
@@ -186,7 +186,7 @@ end
 -- ??
 checkInventory = function ()
   local result = true
-  for i=turtle_inventory_start, 16 do
+  for i = TURTLE_SLOT_INVENTORY, 16 do
     turtle.select(i)
     item = turtle.getItemCount(i)
     if item == 0 then
@@ -197,7 +197,7 @@ checkInventory = function ()
   if result then
     unloadInventory()
   end
-  turtle.select(turtle_inventory_start)
+  turtle.select(TURTLE_SLOT_INVENTORY)
   return result
 end
 
@@ -214,7 +214,7 @@ quickCheckInventory = function ()
   else
     unloadInventory()
   end
-  turtle.select(turtle_inventory_start)
+  turtle.select(TURTLE_SLOT_INVENTORY)
   return result
 end
 
@@ -658,15 +658,18 @@ moveTo = function (destination)
     return false
   end
 
-  log("- moveTo pos" .. position:tostring(), LOG_DEBUG)
-  log("- moveTo des" .. destination:tostring(), LOG_DEBUG)
+  if destination:equals(position) then
+    return true
+  end
+
+  log("- moveTo pos " .. position:tostring(), LOG_DEBUG)
+  log("- moveTo des " .. destination:tostring(), LOG_DEBUG)
 
   move_vector = destination:sub(position)
 
   log("- moveTo vec " .. move_vector:tostring(), LOG_DEBUG)
 
   -- Y axis.
-  log("- moveTo Y " .. move_vector.y, LOG_DEBUG)
   if move_vector.y > 0 then
     for i = 1, move_vector.y do
       up()
@@ -678,7 +681,6 @@ moveTo = function (destination)
   end
 
   -- Z axis.
-  log("- moveTo Z " .. move_vector.z, LOG_DEBUG)
   if move_vector.z > 0 then
     turnTo(DIRECTION_SOUTH)
   elseif move_vector.z < 0 then
@@ -687,7 +689,6 @@ moveTo = function (destination)
   nforward(math.abs(move_vector.z))
 
   -- X axis.
-  log("- moveTo X " .. move_vector.x, LOG_DEBUG)
   if move_vector.x > 0 then
     turnTo(DIRECTION_EAST)
   elseif move_vector.x < 0 then
@@ -727,6 +728,5 @@ init = function ()
   facing = getDirection()
   log ("  -- Facing " .. facing, LOG_DEBUG)
 
-  log ("End INIT", LOG_DEBUG)
   return position ~= nil and facing ~= nil
 end
