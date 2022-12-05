@@ -16,7 +16,6 @@ local MASTER_TURTLES      = 5
 local origin = nil
 local state = "serving" -- "serving" "retriving" "placing" "setting"
 local chunkCount = 0    -- Number of chunks mined (chunk loader used).
-local chunkThird = 0    -- How many 1/3 of chunk mined.
 local spotCount  = 0    -- Number of spots mined.
 
 -- file handler
@@ -37,7 +36,6 @@ local function saveState()
   f.writeLine(origin.y)
   f.writeLine(origin.z)
   f.writeLine(tostring(chunkCount))
-  f.writeLine(tostring(chunkThird))
   f.writeLine(tostring(spotCount))
   f.close()
 end
@@ -56,7 +54,6 @@ local function loadState()
   z = tonumber(f.readLine())
   origin = vector.new(x, y, z)
   chunkCount = tonumber(f.readLine())
-  chunkThird = tonumber(f.readLine())
   spotCount = tonumber(f.readLine())
   f.close()
   return true
@@ -66,44 +63,80 @@ end
 
 function spotMapping()
   local spots = {}
+  -- =================================== --
+  spots[0]  = {front = 0, side = 15}
+  spots[1]  = {front = 0, side = 10}
+  spots[2]  = {front = 0, side = 5}
+  spots[3]  = {front = 0, side = 0}
 
-  -- spots[0] = {front = 0, side = 15}
-  -- spots[1] = {front = 1, side = 12}
-  -- spots[2] = {front = 0, side = 10}
-  -- spots[3] = {front = 1, side = 7}
-  -- spots[4] = {front = 0, side = 5}
-  -- spots[5] = {front = 1, side = 2}
-  -- spots[6] = {front = 0, side = 0}
-  -- spots[7] = {front = 2, side = -1}
-  -- spots[8] = {front = 3, side = 1}
-  -- spots[9] = {front = 4, side = 3}
-  -- spots[10] = {front = 2, side = 4}
-  -- spots[11] = {front = 3, side = 6}
-  -- spots[12] = {front = 4, side = 8}
-  -- spots[13] = {front = 2, side = 9}
-  -- spots[14] = {front = 3, side = 11}
-  -- spots[15] = {front = 4, side = 13}
-  -- spots[16] = {front = 2, side = 14}
-  -- spots[17] = {front = 3, side = 16}
+  spots[4]  = {front = 1, side = 12}
+  spots[5]  = {front = 1, side = 7}
+  spots[6]  = {front = 1, side = 2}
 
-  spots[0] = {front = 0, side = 15}
-  spots[1] = {front = 0, side = 10}
-  spots[2] = {front = 0, side = 5}
-  spots[3] = {front = 0, side = 0}
-  spots[4] = {front = 2, side = -1}
-  spots[5] = {front = 1, side = 2}
-  spots[6] = {front = 2, side = 4}
-  spots[7] = {front = 1, side = 7}
-  spots[8] = {front = 2, side = 9}
-  spots[9] = {front = 1, side = 12}
-  spots[10] = {front = 2, side = 14}
+  spots[7]  = {front = 2, side = 14}
+  spots[8]  = {front = 2, side = 9}
+  spots[9]  = {front = 2, side = 4}
+  spots[10] = {front = 2, side = -1}
+
   spots[11] = {front = 3, side = 16}
-  spots[12] = {front = 4, side = 13}
-  spots[13] = {front = 3, side = 11}
-  spots[14] = {front = 4, side = 8}
-  spots[15] = {front = 3, side = 6}
-  spots[16] = {front = 4, side = 3}
-  spots[17] = {front = 3, side = 1}
+  spots[12] = {front = 3, side = 11}
+  spots[13] = {front = 3, side = 6}
+  spots[14] = {front = 3, side = 1}
+
+  spots[15] = {front = 4, side = 13}
+  spots[16] = {front = 4, side = 8}
+  spots[17] = {front = 4, side = 3}
+  -- =================================== --
+  spots[18] = {front = 5, side = 15}
+  spots[19] = {front = 5, side = 10}
+  spots[20] = {front = 5, side = 5}
+  spots[21] = {front = 5, side = 0}
+
+  spots[22] = {front = 6, side = 12}
+  spots[23] = {front = 6, side = 7}
+  spots[24] = {front = 6, side = 2}
+
+  spots[25] = {front = 7, side = 14}
+  spots[26] = {front = 7, side = 9}
+  spots[27] = {front = 7, side = 4}
+  spots[28] = {front = 7, side = -1}
+
+  spots[29] = {front = 8, side = 16}
+  spots[30] = {front = 8, side = 11}
+  spots[31] = {front = 8, side = 6}
+  spots[32] = {front = 8, side = 1}
+
+  spots[33] = {front = 9, side = 13}
+  spots[34] = {front = 9, side = 8}
+  spots[35] = {front = 9, side = 3}
+  -- =================================== --
+  spots[36] = {front = 10, side = 15}
+  spots[37] = {front = 10, side = 10}
+  spots[38] = {front = 10, side = 5}
+  spots[39] = {front = 10, side = 0}
+
+  spots[40] = {front = 11, side = 12}
+  spots[41] = {front = 11, side = 7}
+  spots[42] = {front = 11, side = 2}
+
+  spots[43] = {front = 12, side = 14}
+  spots[44] = {front = 12, side = 9}
+  spots[45] = {front = 12, side = 4}
+  spots[46] = {front = 12, side = -1}
+
+  spots[47] = {front = 13, side = 16}
+  spots[48] = {front = 13, side = 11}
+  spots[49] = {front = 13, side = 6}
+  spots[50] = {front = 13, side = 1}
+
+  spots[51] = {front = 14, side = 13}
+  spots[52] = {front = 14, side = 8}
+  spots[53] = {front = 14, side = 3}
+  -- =================================== --
+  --spots[54] = {front = 15, side = 15}
+  --spots[55] = {front = 15, side = 10}
+  --spots[56] = {front = 15, side = 5}
+  --spots[57] = {front = 15, side = 0}
 
   return spots
 end
@@ -116,7 +149,7 @@ end
 getSpot = function (index)
   local spots = spotMapping()
 
-  if index < 0 or index > #spots then
+  if index < 0 or index >= #spots then
     return false, false
   end
 
@@ -127,7 +160,7 @@ end
 
 getSpotMax = function ()
   local spots = spotMapping()
-  return #spots
+  return table.getn(spots)
 end
 
 -------------------------------------------------------------------------------
@@ -137,41 +170,38 @@ getNextSpot = function ()
   local spotFront, spotSide, x, z, y, pos, facing
 
   spotFront, spotSide = getSpot(spotCount)
-  print("getNextSpot from map " .. spotFront .. " - " .. spotSide)
+  print("getNextSpot from map (" .. spotCount .. ")(" .. getSpotMax() ..") " .. spotFront .. ", " .. spotSide)
   spotCount = spotCount + 1
 
-  -- If all spots on the 1/3 of chunk got mined, move to the next 1/3.
-  if spotCount > getSpotMax() then
+  -- If all spots on the "chunk" (15 blocks, not 16) got mined, move to the next.
+  if spotCount >= getSpotMax() then
     spotCount = 0
-    chunkThird = chunkThird + 1
-  end
-  -- If the 3 1/3 of the chunk got mined, move to next chunk.
-  if chunkThird >= 3 and spotCount >= 4 then
-    spotCount = 0
-    chunkThird = 0
     nextChunk = true
   end
+  saveState()
 
   -- Set mining spot based on facing direction and position.
   pos = sworm_api.getPosition()
   facing = sworm_api.getFacing()
-  y = pos.y - 1
+  y = pos.y - 2
+
+  print("origin " .. origin:tostring())
+  print("position " .. pos:tostring())
 
   if facing == sworm_api.DIRECTION_NORTH then
     x = pos.x + spotSide
-    z = pos.z - spotFront - (chunkThird * 5)
+    z = pos.z - spotFront
   elseif facing == sworm_api.DIRECTION_SOUTH then
     x = pos.x - spotSide
-    z = pos.z + spotFront + (chunkThird * 5)
+    z = pos.z + spotFront
   elseif facing == sworm_api.DIRECTION_WEST then
-    x = pos.x - spotFront - (chunkThird * 5)
+    x = pos.x - spotFront
     z = pos.z - spotSide
   elseif facing == sworm_api.DIRECTION_EAST then
-    x = pos.x + spotFront + (chunkThird * 5)
+    x = pos.x + spotFront
     z = pos.z + spotSide
   end
 
-  print("getNextSpot " .. x .. " " .. y .. " " .. z)
   return {x = x, y = y, z = z}, nextChunk
 end
 
@@ -203,13 +233,13 @@ goToNextChunk = function ()
 
   -- Get direction vector based on facing direction.
   if facing == sworm_api.DIRECTION_NORTH then
-    newChunkDirection = vector.new(0, 0, -16)
+    newChunkDirection = vector.new(0, 0, -15)
   elseif facing == sworm_api.DIRECTION_SOUTH then
-    newChunkDirection = vector.new(0, 0, 16)
+    newChunkDirection = vector.new(0, 0, 15)
   elseif facing == sworm_api.DIRECTION_WEST then
-    newChunkDirection = vector.new(-16, 0, 0)
+    newChunkDirection = vector.new(-15, 0, 0)
   elseif facing == sworm_api.DIRECTION_EAST then
-    newChunkDirection = vector.new(16, 0, 0)
+    newChunkDirection = vector.new(15, 0, 0)
   else
     print("Facing direction invalid  " .. facing)
     error()
@@ -219,15 +249,15 @@ goToNextChunk = function ()
   print("goToNextChunk " .. newChunkPosition:tostring())
   
   print("Placing chunk loader")
-  sworm_api.moveTo(newChunkPosition)
+  sworm_api.moveTo(newChunkPosition, false)
   placeChunkLoader()
 
   print("Rescuing chunk loader")
-  sworm_api.moveTo(origin)
+  sworm_api.moveTo(origin, false)
   rescueChunkLoader()
 
   print("Reposition to start serving")
-  sworm_api.moveTo(newChunkPosition)
+  sworm_api.moveTo(newChunkPosition, false)
   origin = newChunkPosition
 
   print("Done chunk move")
@@ -243,6 +273,13 @@ setupSlaveInventory = function ()
   turtle.dropDown(1)
   turtle.select(TURTLE_SLOT_BUCKET)
   turtle.dropDown(1)
+end
+
+-------------------------------------------------------------------------------
+
+checkSlotItem = function (slot, item)
+  local inspect = turtle.getItemDetail(slot)
+  return inspect.name == item
 end
 
 -------------------------------------------------------------------------------
@@ -275,13 +312,37 @@ setupSlaves = function ()
 
     -- Check if there is only on item (turtle) in the slot. If empty, skip.
     if turtle.getItemCount(i) ~= 1 then
+      -- Silent fail. Happens very often.
       -- print("Skipping inventory slot " .. i)
       break
     end
+
+    -- Check if selected item is a turtle.
+    if not checkSlotItem(i, 'computercraft:turtle') and not checkSlotItem(i, 'computercraft:turtle_advanced') then
+      print("No turtle on the turtle slot " .. i)
+      break
+    end
+
+    -- Check if we have all necessary items.
+    if not checkSlotItem(TURTLE_SLOT_FUEL, 'enderstorage:ender_chest') then
+      print("No fuel enderchest on slot " .. TURTLE_SLOT_FUEL)
+      break
+    end
+    if not checkSlotItem(TURTLE_SLOT_UNLOAD, 'enderstorage:ender_chest') then
+      print("No unload item enderchest on slot " .. TURTLE_SLOT_UNLOAD)
+      break
+    end
+    if not checkSlotItem(TURTLE_SLOT_BUCKET, 'minecraft:bucket') then
+      print("No lava for fuel bucket on slot " .. TURTLE_SLOT_BUCKET)
+      break
+    end
+
     state = "setting"
+    saveState()
 
     -- Place the slave turtle at the bottom.
     -- print("Placing Turtle " .. (i - MASTER_TURTLES + 1))
+    sworm_api.down()
     turtle.placeDown()
     sleep(0.5)
 
@@ -299,7 +360,8 @@ setupSlaves = function ()
         event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
         timeout = timeout + 1
         if timeout > 20 then
-            turtle.digDown()
+          turtle.digDown()
+          sworm_api.up()
           return
         end
         print("No response. Retry in 1 sec.")
@@ -323,6 +385,7 @@ setupSlaves = function ()
         timeout = timeout + 1
         if timeout > 20 then
             turtle.digDown()
+            sworm_api.up()
           return
         end
         print("No response. Retry in 2 sec.")
@@ -332,9 +395,10 @@ setupSlaves = function ()
       -- Send the first mine spot to the slave.
       -- print("Slave requesting spot")
       spot, nextChunk = getNextSpot()
+      spot.y = spot.y + 1
       modem.transmit(channel, 0, spot)
       print("Slave " .. channel .. " started (" .. spotCount .. ") x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
-      
+
       -- Make sure we don't close the channels.
       -- modem.close(channel)
 
@@ -342,6 +406,7 @@ setupSlaves = function ()
     else
       print("Error: Turtle not present at the bottom.")
     end
+    sworm_api.up()
     print("---------------------------------")
   end
 
@@ -353,7 +418,9 @@ end
 attendRequests = function ()
   local spot, nextChunk
   local event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+
   state = "serving"
+  saveState()
 
   if msg == "request" then
     local spot, nextChunk = getNextSpot()
@@ -374,19 +441,18 @@ end
 main = function ()
   sworm_api.init()
 
-  origin = sworm_api.getPosition()
   modem = peripheral.find("modem")
-
-  if turtle.getFuelLevel() < 10 then
-    sworm_api.refuel()
-  end
 
   if not loadState() then
     print("Master started. Ready to command!")
+
+      -- Position to start service.
+    sworm_api.up()
+    sworm_api.up()
+    origin = sworm_api.getPosition()
     initChunkloader()
   else
     print("State loaded. Resuming command!")
-    sleep(5)
 
     -- Break any turtle not completly set and restart setting.
     if state == "setting" then
@@ -400,7 +466,6 @@ main = function ()
 
   while true do
     setupSlaves()
-    state = "serving"
     attendRequests()
   end
 end

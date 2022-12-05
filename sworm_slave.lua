@@ -139,6 +139,7 @@ end
 
 excavate = function ()
 	local depth = 0
+  local success, data
 
 	state = "mining"
 
@@ -156,6 +157,20 @@ excavate = function ()
 				sworm_api.right() 
 			end
 		end
+
+    -- Check for lava on bottom coordinates.
+    success, data = turtle.inspectDown()
+    if data.name == 'minecraft:lava' then
+      turtle.select(sworm_api.TURTLE_SLOT_BUCKET)
+      turtle.place()
+      turtle.refuel()
+      message("Lava found and used for fuel.")
+      turtle.select(sworm_api.TURTLE_SLOT_INVENTORY)
+      return true
+    end
+
+    turtle.digDown()
+
     depth = depth + 1
 	end
 
@@ -231,11 +246,13 @@ main = function ()
         init = true
       end
       state = "waiting"
+      saveState()
 
 		elseif state == "waiting" then
 			message("--> Waiting")
 			spot = getNextSpot()
 			state = "moving"
+      saveState()
 
 		elseif state == "moving" then
 			message("--> Moving")
@@ -250,6 +267,7 @@ main = function ()
       spot = vector.new(spot.x, spot.y, spot.z)
 			sworm_api.moveTo(spot)
 			state = "mining"
+      saveState()
 
 		elseif state == "mining" then
 			-- rawread()
@@ -260,6 +278,7 @@ main = function ()
       end
 			excavate()
 			state = "waiting"
+      saveState()
 
 		else
 			message("Invalid state - main() " .. state)

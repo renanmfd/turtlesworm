@@ -257,7 +257,7 @@ end
 -- @return Boolean
 --   False if reached unbreakable block, true otherwise.
 forward = function ()
-  local max = 30
+  local max = 50
 
   while not turtle.forward() do
     -- Fuel low.
@@ -273,11 +273,14 @@ forward = function ()
       until not turtle.attack()
     -- Block on the way.
     elseif isTurtle("front") then
-      up()
-      up()
-      sleep(math.random(2, 20))
-      down()
-      down()
+      left()
+      forward()
+      right()
+      sleep(math.random(1, 7))
+      forward()
+      right()
+      forward()
+      left()
     else
       log("Block on the way. Dig!")
       if not turtle.dig() then
@@ -309,8 +312,12 @@ f = forward
 --   Number of blocks to move forward.
 -- @return Boolean
 --   False if reached unbreakable block, true otherwise.
-nforward = function (num)
-    local i 
+nforward = function (num, uplevel)
+  local i
+
+  if uptravel == nil then
+    uptravel = true
+  end
 
   if num < 0 then
     message("Invalid number - nforward(num) =" .. num)
@@ -320,7 +327,7 @@ nforward = function (num)
   end
 
   -- If moving a lot forward, lets travel one level above.
-  if num > 5 then
+  if num > 5 and uptravel then
     forward()
     up()
 
@@ -366,7 +373,7 @@ down = function ()
     elseif isTurtle("down") then
       nforward(2)
       turnAround()
-      sleep(math.random(2, 20))
+      sleep(math.random(1, 7))
       nforward(2)
     -- Block on the way.
     elseif turtle.detectDown() then
@@ -415,7 +422,8 @@ up = function ()
     elseif isTurtle("up") then
       nforward(2)
       turnAround()
-      sleep(math.random(2, 20))
+      up()
+      sleep(math.random(1, 7))
       nforward(2)
     -- Block on the way.
     elseif turtle.detectUp() then
@@ -650,8 +658,12 @@ end
 -- @function moveTo(posx, posy)
 --
 -- Go to specified coordinates.
-moveTo = function (destination)
+moveTo = function (destination, uptravel)
   local move_vector, i, pos
+
+  if uptravel == nil then
+    uptravel = true
+  end
 
   if destination == nil then 
     log("moveTo() destination not set.", LOG_ERROR)
@@ -686,7 +698,7 @@ moveTo = function (destination)
   elseif move_vector.z < 0 then
     turnTo(DIRECTION_NORTH)
   end
-  nforward(math.abs(move_vector.z))
+  nforward(math.abs(move_vector.z), uptravel)
 
   -- X axis.
   if move_vector.x > 0 then
@@ -694,7 +706,7 @@ moveTo = function (destination)
   elseif move_vector.x < 0 then
     turnTo(DIRECTION_WEST)
   end
-  nforward(math.abs(move_vector.x))
+  nforward(math.abs(move_vector.x), uptravel)
 
   -- If GPS position dont match recorded position, move again.
   while not gpsCheck() do
