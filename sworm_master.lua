@@ -149,7 +149,7 @@ end
 getSpot = function (index)
   local spots = spotMapping()
 
-  if index < 0 or index >= #spots then
+  if index < 0 or index > #spots then
     return false, false
   end
 
@@ -160,7 +160,7 @@ end
 
 getSpotMax = function ()
   local spots = spotMapping()
-  return table.getn(spots)
+  return table.getn(spots) + 1
 end
 
 -------------------------------------------------------------------------------
@@ -170,7 +170,7 @@ getNextSpot = function ()
   local spotFront, spotSide, x, z, y, pos, facing
 
   spotFront, spotSide = getSpot(spotCount)
-  print("getNextSpot from map (" .. spotCount .. ")(" .. getSpotMax() ..") " .. spotFront .. ", " .. spotSide)
+  print("getNextSpot from map (" .. spotCount .. ") " .. spotFront .. ", " .. spotSide)
   spotCount = spotCount + 1
 
   -- If all spots on the "chunk" (15 blocks, not 16) got mined, move to the next.
@@ -185,8 +185,8 @@ getNextSpot = function ()
   facing = sworm_api.getFacing()
   y = pos.y - 2
 
+  print("pos " .. pos:tostring())
   print("origin " .. origin:tostring())
-  print("position " .. pos:tostring())
 
   if facing == sworm_api.DIRECTION_NORTH then
     x = pos.x + spotSide
@@ -279,6 +279,9 @@ end
 
 checkSlotItem = function (slot, item)
   local inspect = turtle.getItemDetail(slot)
+  if inspect == nil then
+    return false
+  end
   return inspect.name == item
 end
 
@@ -338,11 +341,11 @@ setupSlaves = function ()
     end
 
     state = "setting"
+    sworm_api.down()
     saveState()
 
     -- Place the slave turtle at the bottom.
     -- print("Placing Turtle " .. (i - MASTER_TURTLES + 1))
-    sworm_api.down()
     turtle.placeDown()
     sleep(0.5)
 
@@ -359,12 +362,12 @@ setupSlaves = function ()
       while msg ~= "ready" do
         event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
         timeout = timeout + 1
-        if timeout > 20 then
+        if timeout > 10 then
           turtle.digDown()
           sworm_api.up()
           return
         end
-        print("No response. Retry in 1 sec.")
+        print("No response. Retry in 1 sec (" .. timeout .. "/10).")
         sleep(1)
       end
 
@@ -372,6 +375,7 @@ setupSlaves = function ()
       -- print("Response received. Seting him up to mine.")
       setupSlaveInventory()
       channel = reply
+      sworm_api.up()
 
       -- Sending all set message.
       -- print("Sending 'all set' message CH:" .. channel)
@@ -383,12 +387,11 @@ setupSlaves = function ()
       while reply ~= channel do
         event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
         timeout = timeout + 1
-        if timeout > 20 then
+        if timeout > 10 then
             turtle.digDown()
-            sworm_api.up()
           return
         end
-        print("No response. Retry in 2 sec.")
+        print("No response. Retry in 2 sec (" .. timeout .. "/10).")
         sleep(2)
       end
 
@@ -402,11 +405,10 @@ setupSlaves = function ()
       -- Make sure we don't close the channels.
       -- modem.close(channel)
 
-      sleep(2)
+      sleep(5)
     else
       print("Error: Turtle not present at the bottom.")
     end
-    sworm_api.up()
     print("---------------------------------")
   end
 
@@ -417,10 +419,12 @@ end
 
 attendRequests = function ()
   local spot, nextChunk
-  local event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+  local event, side, freq , reply , msg , dist
 
   state = "serving"
   saveState()
+
+  event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
 
   if msg == "request" then
     local spot, nextChunk = getNextSpot()
@@ -439,20 +443,22 @@ end
 -- Main -----------------------------------------------------------------------
 
 main = function ()
-  sworm_api.init()
-
   modem = peripheral.find("modem")
 
   if not loadState() then
     print("Master started. Ready to command!")
 
-      -- Position to start service.
+    -- Position to start service.
+    sworm_api.init()
     sworm_api.up()
     sworm_api.up()
+    sworm_api.gpsCheck()
     origin = sworm_api.getPosition()
+    saveState()
     initChunkloader()
   else
-    print("State loaded. Resuming command!")
+    print("State loaded. Resuming command! " .. state)
+    sworm_api.init()
 
     -- Break any turtle not completly set and restart setting.
     if state == "setting" then
@@ -462,6 +468,8 @@ main = function ()
       sworm_api.moveTo(origin)
       goToNextChunk()
     end
+    sleep(10)
+    print("Start working...")
   end
 
   while true do

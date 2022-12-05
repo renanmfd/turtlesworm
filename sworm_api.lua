@@ -148,6 +148,9 @@ end
 --
 refuel = function ()
   if turtle.detect() then
+    while isTurtle("front") do
+      sleep(2)
+    end
     if not turtle.dig() then
       log('Bedrock stop - refuel()', LOG_ERROR)
     return
@@ -155,7 +158,8 @@ refuel = function ()
   end
   turtle.select(TURTLE_SLOT_FUEL)
   turtle.place()
-  turtle.suck(TURTLE_SLOT_FUEL)
+  turtle.select(16)
+  turtle.suck(64)
   turtle.refuel(64)
   log('Fuel level: ' .. turtle.getFuelLevel(), LOG_NOTICE)
   turtle.select(TURTLE_SLOT_FUEL)
@@ -164,11 +168,25 @@ refuel = function ()
 end
 
 -------------------------------------------------------------------------------
+-- @function checkFuel()
+--
+-- Check fuel levels.
+checkFuel = function ()
+  if turtle.getFuelLevel() < 20 then
+    log("Fuel is almost over. Refueling!", LOG_NOTICE)
+    refuel()
+  end
+end
+
+-------------------------------------------------------------------------------
 -- @function unloadInventory()
 --
 -- ??
 unloadInventory = function ()
   turtle.select(TURTLE_SLOT_UNLOAD)
+  while isTurtle("up") do
+    sleep(2)
+  end
   turtle.digUp()
   turtle.placeUp()
   for i = TURTLE_SLOT_INVENTORY, 16 do
@@ -276,7 +294,8 @@ forward = function ()
       left()
       forward()
       right()
-      sleep(math.random(1, 7))
+      sleep(math.random(1, 5))
+      forward()
       forward()
       right()
       forward()
@@ -371,10 +390,10 @@ down = function ()
       until not turtle.attackDown()
     -- Turtle on the way.
     elseif isTurtle("down") then
-      nforward(2)
+      forward()
       turnAround()
-      sleep(math.random(1, 7))
-      nforward(2)
+      sleep(math.random(3, 10))
+      forward()
     -- Block on the way.
     elseif turtle.detectDown() then
       log("Block on the way. Dig!")
@@ -420,11 +439,10 @@ up = function ()
       until not turtle.attackUp()
     -- Turtle on the way.
     elseif isTurtle("up") then
-      nforward(2)
+      forward()
       turnAround()
-      up()
-      sleep(math.random(1, 7))
-      nforward(2)
+      sleep(math.random(3, 10))
+      forward()
     -- Block on the way.
     elseif turtle.detectUp() then
       log("Block on the way. Dig!")
@@ -623,10 +641,7 @@ getDirection = function ()
   local pos1, pos2, diff
 
   -- Make sure we have fuel to move.
-  if turtle.getFuelLevel() < 2 then
-    log("getDirection() - Refueling!")
-    refuel()
-  end
+  checkFuel()
 
   pos1 = getGPS()
   while not turtle.forward() do
@@ -711,14 +726,14 @@ moveTo = function (destination, uptravel)
   -- If GPS position dont match recorded position, move again.
   while not gpsCheck() do
     log("Position dont match records.", LOG_WARNING)
-    sleep(2)
+    sleep(1)
     moveTo(destination)
   end
 
   -- It's not on the correct destination.
   while not position:equals(destination) do
     log("Position dont match destination.", LOG_WARNING)
-    sleep(2)
+    sleep(1)
     moveTo(destination)
   end
 
