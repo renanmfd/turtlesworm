@@ -156,6 +156,7 @@ refuel = function ()
     return
     end
   end
+
   turtle.select(TURTLE_SLOT_FUEL)
   turtle.place()
   turtle.select(16)
@@ -165,6 +166,13 @@ refuel = function ()
   turtle.select(TURTLE_SLOT_FUEL)
   turtle.dig()
   turtle.select(TURTLE_SLOT_INVENTORY)
+
+  if turtle.getFuelLevel() == 0 then
+    log("Could NOT refuel.", LOG_ERROR)
+    error()
+    return false
+  end
+  return true
 end
 
 -------------------------------------------------------------------------------
