@@ -419,6 +419,12 @@ setupSlaves = function ()
       modem.transmit(channel, 0, spot)
       print("Slave " .. channel .. " started (" .. spotCount .. ") x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
 
+      if nextChunk then
+        state = "moving"
+        goToNextChunk()
+        chunkCount = chunkCount + 1
+      end
+
       -- Make sure we don't close the channels.
       -- modem.close(channel)
 
@@ -447,7 +453,7 @@ attendRequests = function ()
 
   if msg == "request" then
     local spot, nextChunk = getNextSpot()
-    print("Slave " .. reply .. ", job on x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
+    print("Slave " .. channel .. " job at (" .. spotCount .. ") x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
     modem.transmit(reply, 0, spot)
 
     if nextChunk then
