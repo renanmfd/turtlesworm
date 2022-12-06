@@ -9,6 +9,8 @@
 local INVENTORY_IGNORE_MAP = {
   "minecraft:stone",
   "minecraft:cobblestone",
+  "minecraft:cobbled_deepslate",
+  "minecraft:tuff",
   "minecraft:netherrack",
   "minecraft:soul_sand",
   "minecraft:grass_block",
@@ -85,12 +87,11 @@ setting = function ()
   message("call setting()")
 
   modem.open(initialChannel)
-  sleep(1)
 
   modem.transmit(initialChannel, myChannel, "ready")
 
   modem.open(myChannel)
-  os.startTimer(20)
+  os.startTimer(10)
   event, side, freq , reply , msg , dist = os.pullEvent()
   message("Event " .. event .. " on " .. myChannel)
 

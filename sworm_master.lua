@@ -361,10 +361,11 @@ setupSlaves = function ()
       -- Turn on slave turtle.
       -- print("---> Turtle")
       peripheral.wrap("bottom").turnOn()
+      sleep(2)
 
       -- Connect to slave and wait response.
       -- print("Waiting for slave response")
-      os.startTimer(20)
+      os.startTimer(8)
       event, side, freq , reply , msg , dist = os.pullEvent()
 
       -- Fail safe.
