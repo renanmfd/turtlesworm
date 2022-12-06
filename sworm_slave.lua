@@ -90,9 +90,9 @@ setting = function ()
   modem.transmit(initialChannel, myChannel, "ready")
 
   modem.open(myChannel)
-  os.startTimer(5)
+  os.startTimer(20)
   event, side, freq , reply , msg , dist = os.pullEvent()
-  message(msg .. " - " .. myChannel)
+  message("Event " .. event .. " on " .. myChannel)
 
   while tostring(msg) ~= tostring(myChannel) do
     message("Waiting for 'set' message on channel " .. myChannel)
@@ -227,13 +227,13 @@ end
 main = function ()
   local init = false
 
+  modem = peripheral.find("modem")
+  myChannel = os.getComputerID()
+
   if init == false and state ~= "setting" then
     sworm_api.init()
     init = true
   end
-
-  modem = peripheral.find("modem")
-  myChannel = os.getComputerID()
 
   if loadState() then
     message("State loaded. Resuming task.")

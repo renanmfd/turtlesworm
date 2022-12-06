@@ -364,7 +364,7 @@ setupSlaves = function ()
 
       -- Connect to slave and wait response.
       -- print("Waiting for slave response")
-      os.startTimer(5)
+      os.startTimer(20)
       event, side, freq , reply , msg , dist = os.pullEvent()
 
       -- Fail safe.
@@ -386,7 +386,7 @@ setupSlaves = function ()
       -- print("Response received. Seting him up to mine.")
       setupSlaveInventory()
       channel = reply
-      channels[reply] = reply
+      channels[reply] = channel
       sworm_api.up()
 
       -- Sending all set message.
@@ -394,7 +394,7 @@ setupSlaves = function ()
       modem.open(channel)
       modem.transmit(channel, 0, channel)
 
-      os.startTimer(5)
+      os.startTimer(20)
       event, side, freq , reply , msg , dist = os.pullEvent()
 
       -- Fail safe.
