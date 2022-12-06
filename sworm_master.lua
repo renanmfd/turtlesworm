@@ -365,9 +365,11 @@ setupSlaves = function ()
       -- Connect to slave and wait response.
       -- print("Waiting for slave response")
       timeout = 0
-      event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+      os.startTimer(5)
+      event, side, freq , reply , msg , dist = os.pullEvent()
       while msg ~= "ready" do
-        event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+        os.startTimer(5)
+        event, side, freq , reply , msg , dist = os.pullEvent()
         timeout = timeout + 1
         if timeout > 10 then
           turtle.digDown()
@@ -391,9 +393,11 @@ setupSlaves = function ()
 
       modem.open(channel)
       timeout = 0
-      event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+      os.startTimer(5)
+      event, side, freq , reply , msg , dist = os.pullEvent()
       while reply ~= channel do
-        event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+        os.startTimer(5)
+        event, side, freq , reply , msg , dist = os.pullEvent()
         timeout = timeout + 1
         if timeout > 10 then
             turtle.digDown()

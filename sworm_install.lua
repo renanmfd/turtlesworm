@@ -35,3 +35,9 @@ print("Done!")
 -- (deprecated) pastebin get mef07AqS install
 -- wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/sworm_install.lua install
 
+-- GPS Program
+-- shell.run("gps", "host", -95, 70, 115)
+-- shell.run("gps", "host", -95, 65, 115)
+-- shell.run("gps", "host", -95, 65, 110)
+-- shell.run("gps", "host", -95, 70, 115)
+
