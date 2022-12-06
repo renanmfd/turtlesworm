@@ -70,7 +70,7 @@ function spotMapping()
   spots[0]  = {front = 0, side = 15}
   spots[1]  = {front = 0, side = 10}
   spots[2]  = {front = 0, side = 5}
-  spots[15]  = {front = 0, side = 0}
+  spots[14]  = {front = 0, side = 0}
 
   spots[4]  = {front = 1, side = 12}
   spots[5]  = {front = 1, side = 7}
