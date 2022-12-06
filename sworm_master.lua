@@ -437,7 +437,8 @@ attendRequests = function ()
   state = "serving"
   saveState()
 
-  event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+  os.startTimer(30)
+  event, side, freq , reply , msg , dist = os.pullEvent()
 
   if msg == "request" then
     local spot, nextChunk = getNextSpot()
