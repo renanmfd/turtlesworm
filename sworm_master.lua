@@ -17,6 +17,7 @@ local origin = nil
 local state = "serving" -- "serving" "retriving" "placing" "setting"
 local chunkCount = 0    -- Number of chunks mined (chunk loader used).
 local spotCount  = 0    -- Number of spots mined.
+local channels = {}
 
 -- file handler
 
@@ -37,6 +38,7 @@ local function saveState()
   f.writeLine(origin.z)
   f.writeLine(tostring(chunkCount))
   f.writeLine(tostring(spotCount))
+  f.writeLine(textutils.serialiseJSON(channels))
   f.close()
 end
 
@@ -55,6 +57,7 @@ local function loadState()
   origin = vector.new(x, y, z)
   chunkCount = tonumber(f.readLine())
   spotCount = tonumber(f.readLine())
+  channels = textutils.unserialiseJSON(f.readLine())
   f.close()
   return true
 end
@@ -170,7 +173,7 @@ getNextSpot = function ()
   local spotFront, spotSide, x, z, y, pos, facing
 
   spotFront, spotSide = getSpot(spotCount)
-  print("getNextSpot from map (" .. spotCount .. ") " .. spotFront .. ", " .. spotSide)
+  -- print("getNextSpot from map (" .. spotCount .. ") " .. spotFront .. ", " .. spotSide)
   spotCount = spotCount + 1
 
   -- If all spots on the "chunk" (15 blocks, not 16) got mined, move to the next.
@@ -184,9 +187,6 @@ getNextSpot = function ()
   pos = sworm_api.getPosition()
   facing = sworm_api.getFacing()
   y = pos.y - 2
-
-  print("pos " .. pos:tostring())
-  print("origin " .. origin:tostring())
 
   if facing == sworm_api.DIRECTION_NORTH then
     x = pos.x + spotSide
@@ -251,6 +251,9 @@ goToNextChunk = function ()
   print("Placing chunk loader")
   sworm_api.moveTo(newChunkPosition, false)
   placeChunkLoader()
+
+  attendRequests()
+  attendRequests()
 
   print("Rescuing chunk loader")
   sworm_api.moveTo(origin, false)
@@ -375,6 +378,7 @@ setupSlaves = function ()
       -- print("Response received. Seting him up to mine.")
       setupSlaveInventory()
       channel = reply
+      channels[reply] = reply
       sworm_api.up()
 
       -- Sending all set message.
@@ -398,14 +402,15 @@ setupSlaves = function ()
       -- Send the first mine spot to the slave.
       -- print("Slave requesting spot")
       spot, nextChunk = getNextSpot()
-      spot.y = spot.y + 1
+      -- spot.y = spot.y + 1
       modem.transmit(channel, 0, spot)
       print("Slave " .. channel .. " started (" .. spotCount .. ") x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
 
       -- Make sure we don't close the channels.
       -- modem.close(channel)
 
-      sleep(5)
+      saveState()
+      sleep(2)
     else
       print("Error: Turtle not present at the bottom.")
     end
@@ -440,6 +445,15 @@ attendRequests = function ()
 end
 
 -------------------------------------------------------------------------------
+
+openChannels = function ()
+  print("Opening channels for comms.")
+  for channel, open in pairs(channels) do
+    modem.open(channel)
+  end
+end
+
+-------------------------------------------------------------------------------
 -- Main -----------------------------------------------------------------------
 
 main = function ()
@@ -468,7 +482,9 @@ main = function ()
       sworm_api.moveTo(origin)
       goToNextChunk()
     end
-    sleep(10)
+
+    openChannels()
+    sleep(1)
     print("Start working...")
   end
 
@@ -476,7 +492,10 @@ main = function ()
     setupSlaves()
     attendRequests()
   end
+
+  print("Program ENDED").
 end
 
 os.loadAPI("sworm_api")
+sleep(5)
 main()

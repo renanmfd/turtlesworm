@@ -169,7 +169,6 @@ excavate = function ()
       turtle.refuel()
       message("Lava found and used for fuel.")
       turtle.select(sworm_api.TURTLE_SLOT_INVENTORY)
-      return true
     end
 
     turtle.digDown()
@@ -264,7 +263,7 @@ main = function ()
         sworm_api.init()
         init = true
         state = "waiting"
-        break;
+        spot = getNextSpot()
       end
       spot = vector.new(spot.x, spot.y, spot.z)
       sworm_api.moveTo(spot)
@@ -291,4 +290,5 @@ main = function ()
 end
 
 os.loadAPI("sworm_api")
+sleep(5)
 main()

@@ -646,6 +646,9 @@ getDirection = function ()
   pos1 = getGPS()
   while not turtle.forward() do
     turtle.turnLeft()
+    if not isTurtle("front") then
+      turtle.dig()
+    end
   end
   pos2 = getGPS()
   turtle.back()
@@ -674,7 +677,7 @@ end
 --
 -- Go to specified coordinates.
 moveTo = function (destination, uptravel)
-  local move_vector, i, pos
+  local move_vector, i, pos, rand
 
   if uptravel == nil then
     uptravel = true
@@ -689,12 +692,12 @@ moveTo = function (destination, uptravel)
     return true
   end
 
-  log("- moveTo pos " .. position:tostring(), LOG_DEBUG)
-  log("- moveTo des " .. destination:tostring(), LOG_DEBUG)
+  -- log("- moveTo pos " .. position:tostring(), LOG_DEBUG)
+  -- log("- moveTo des " .. destination:tostring(), LOG_DEBUG)
 
   move_vector = destination:sub(position)
 
-  log("- moveTo vec " .. move_vector:tostring(), LOG_DEBUG)
+  -- log("- moveTo vec " .. move_vector:tostring(), LOG_DEBUG)
 
   -- Y axis.
   if move_vector.y > 0 then
@@ -707,6 +710,19 @@ moveTo = function (destination, uptravel)
     end
   end
 
+  -- Random first axis move.
+  rand = math.random(0, 1)
+
+  -- X axis (random).
+  if rand == 1 then
+    if move_vector.x > 0 then
+      turnTo(DIRECTION_EAST)
+    elseif move_vector.x < 0 then
+      turnTo(DIRECTION_WEST)
+    end
+    nforward(math.abs(move_vector.x), uptravel)
+  end
+
   -- Z axis.
   if move_vector.z > 0 then
     turnTo(DIRECTION_SOUTH)
@@ -715,13 +731,15 @@ moveTo = function (destination, uptravel)
   end
   nforward(math.abs(move_vector.z), uptravel)
 
-  -- X axis.
-  if move_vector.x > 0 then
-    turnTo(DIRECTION_EAST)
-  elseif move_vector.x < 0 then
-    turnTo(DIRECTION_WEST)
+  -- X axis (random).
+  if rand == 0 then
+    if move_vector.x > 0 then
+      turnTo(DIRECTION_EAST)
+    elseif move_vector.x < 0 then
+      turnTo(DIRECTION_WEST)
+    end
+    nforward(math.abs(move_vector.x), uptravel)
   end
-  nforward(math.abs(move_vector.x), uptravel)
 
   -- If GPS position dont match recorded position, move again.
   while not gpsCheck() do
@@ -745,14 +763,35 @@ end
 --
 -- Initialize turtle.
 init = function ()
+  local timeout = 0
   -- Set position with GPS.
   log ("Set position", LOG_DEBUG)
   position = getGPS()
+
+  while position == nil do
+    position = getGPS()
+    sleep(5)
+    timeout = timeout + 1
+    if timeout > 10 then
+      log("GPS position not found.", LOG_ERROR)
+      break
+    end
+  end
   log ("  -- Position " .. position:tostring())
 
   -- Set facing direction.
   log ("Set facing", LOG_DEBUG)
   facing = getDirection()
+  timeout = 0
+  while facing == nil do
+    facing = getDirection()
+    sleep(5)
+    timeout = timeout + 1
+    if timeout > 10 then
+      log("GPS position not found.", LOG_ERROR)
+      break
+    end
+  end
   log ("  -- Facing " .. facing, LOG_DEBUG)
 
   return position ~= nil and facing ~= nil
