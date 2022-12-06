@@ -15,20 +15,23 @@ if fs.exists("startup") then
 end
 
 print("Instaling...")
-shell.run("rom/programs/http/pastebin get TtbVATev sworm_api")
+-- (deprecated) shell.run("rom/programs/http/pastebin get TtbVATev sworm_api")
+shell.run("rom/programs/http/wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/sworm_api.lua sworm_api")
 
 if arg[1] == "master" then
   print("  Install MASTER")
   shell.run("label set master-" .. os.getComputerID())
-  shell.run("rom/programs/http/pastebin get qyNPY1r4 startup")
+  -- (deprecated) shell.run("rom/programs/http/pastebin get qyNPY1r4 startup")
+  shell.run("rom/programs/http/wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/sworm_master.lua startup")
 else
   print("  Install SLAVE")
   shell.run("label set slave-" .. os.getComputerID())
-  shell.run("rom/programs/http/pastebin get T5N2kxDA startup")
+  -- (deprecated) shell.run("rom/programs/http/pastebin get T5N2kxDA startup")
+  shell.run("rom/programs/http/wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/sworm_slave.lua startup")
 end
 
 print("Done!")
 
--- pastebin get mef07AqS sworm_install
+-- (deprecated) pastebin get mef07AqS install
+-- wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/sworm_install.lua install
 
--- pastebin get mef07AqS install
