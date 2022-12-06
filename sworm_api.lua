@@ -653,10 +653,10 @@ getDirection = function ()
 
   pos1 = getGPS()
   while not turtle.forward() do
-    turtle.turnLeft()
     if not isTurtle("front") then
       turtle.dig()
     end
+    sleep(2)
   end
   pos2 = getGPS()
   turtle.back()

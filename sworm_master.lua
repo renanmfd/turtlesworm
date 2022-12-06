@@ -226,6 +226,9 @@ end
 
 goToNextChunk = function ()
   local newChunkDirection, newChunkPosition, facing
+
+  state = "moving"
+  saveState()
   
   -- Make sure we are at the origin.
   sworm_api.moveTo(origin)
@@ -262,6 +265,7 @@ goToNextChunk = function ()
   print("Reposition to start serving")
   sworm_api.moveTo(newChunkPosition, false)
   origin = newChunkPosition
+  saveState()
 
   print("Done chunk move")
 end
