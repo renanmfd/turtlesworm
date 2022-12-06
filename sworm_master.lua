@@ -453,7 +453,7 @@ attendRequests = function ()
 
   if msg == "request" then
     local spot, nextChunk = getNextSpot()
-    print("Slave " .. channel .. " job at (" .. spotCount .. ") x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
+    print("Slave " .. reply .. " job at (" .. spotCount .. ") x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
     modem.transmit(reply, 0, spot)
 
     if nextChunk then
