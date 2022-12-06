@@ -9,6 +9,7 @@
 local INVENTORY_IGNORE_MAP = {
   "minecraft:stone",
   "minecraft:cobblestone",
+  "minecraft:deepslate",
   "minecraft:cobbled_deepslate",
   "minecraft:tuff",
   "minecraft:netherrack",
@@ -174,6 +175,8 @@ excavate = function ()
       turtle.refuel()
       message("Lava found and used for fuel.")
       turtle.select(sworm_api.TURTLE_SLOT_INVENTORY)
+    elseif data.name == 'minecraft:chest' then
+      sworm_api.unloadInventory()
     end
 
     turtle.digDown()
@@ -210,6 +213,9 @@ checkIgnore = function ()
     message("Lava found and used for fuel.")
     turtle.select(sworm_api.TURTLE_SLOT_INVENTORY)
     return true
+  elseif data.name == 'minecraft:chest' then
+    sworm_api.unloadInventory()
+    return false
   end
 
   for index, ignored_block in pairs(INVENTORY_IGNORE_MAP) do
