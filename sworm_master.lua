@@ -70,7 +70,7 @@ function spotMapping()
   spots[0]  = {front = 0, side = 15}
   spots[1]  = {front = 0, side = 10}
   spots[2]  = {front = 0, side = 5}
-  -- spots[3]  = {front = 0, side = 0} // moved ahead.
+  spots[15]  = {front = 0, side = 0}
 
   spots[4]  = {front = 1, side = 12}
   spots[5]  = {front = 1, side = 7}
@@ -84,9 +84,7 @@ function spotMapping()
   spots[11] = {front = 3, side = 16}
   spots[12] = {front = 3, side = 11}
   spots[13] = {front = 3, side = 6}
-  spots[14] = {front = 3, side = 1}
-  -- Moved to avoid conflicts.
-  spots[3]  = {front = 0, side = 0}
+  spots[3]  = {front = 3, side = 1}
 
   spots[15] = {front = 4, side = 13}
   spots[16] = {front = 4, side = 8}
