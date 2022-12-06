@@ -79,21 +79,25 @@ end
 -------------------------------------------------------------------------------
 
 setting = function ()
+  local event, side, freq , reply , msg , dist
+
   state = "setting"
   message("call setting()")
 
   modem.open(initialChannel)
-  sleep(0.1)
+  sleep(1)
 
   modem.transmit(initialChannel, myChannel, "ready")
 
   modem.open(myChannel)
-  local event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+  os.startTimer(5)
+  event, side, freq , reply , msg , dist = os.pullEvent()
   message(msg .. " - " .. myChannel)
 
   while tostring(msg) ~= tostring(myChannel) do
     message("Waiting for 'set' message on channel " .. myChannel)
-    event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+    os.startTimer(5)
+    event, side, freq , reply , msg , dist = os.pullEvent()
   end
 
   message("Channel/ID set to " .. myChannel)

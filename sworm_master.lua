@@ -364,9 +364,11 @@ setupSlaves = function ()
 
       -- Connect to slave and wait response.
       -- print("Waiting for slave response")
-      timeout = 0
       os.startTimer(5)
       event, side, freq , reply , msg , dist = os.pullEvent()
+
+      -- Fail safe.
+      timeout = 0
       while msg ~= "ready" do
         os.startTimer(5)
         event, side, freq , reply , msg , dist = os.pullEvent()
@@ -389,12 +391,14 @@ setupSlaves = function ()
 
       -- Sending all set message.
       -- print("Sending 'all set' message CH:" .. channel)
+      modem.open(channel)
       modem.transmit(channel, 0, channel)
 
-      modem.open(channel)
-      timeout = 0
       os.startTimer(5)
       event, side, freq , reply , msg , dist = os.pullEvent()
+
+      -- Fail safe.
+      timeout = 0
       while reply ~= channel do
         os.startTimer(5)
         event, side, freq , reply , msg , dist = os.pullEvent()
