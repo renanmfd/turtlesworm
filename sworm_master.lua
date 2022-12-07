@@ -433,7 +433,7 @@ setupSlaves = function ()
 
       sworm_api.up()
       saveState()
-      sleep(2)
+      sleep(5)
     else
       print("Error: Turtle not present at the bottom.")
     end
