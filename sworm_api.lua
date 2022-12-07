@@ -264,7 +264,9 @@ isTurtle = function (side)
   end
 
   if data.name == "computercraft:turtle" or
-      data.name == "computercraft:turtle_advanced" then
+      data.name == "computercraft:turtle_advanced" or
+      data.name == "enderstorage:ender_chest" or
+      data.name == "chickenchunks:chunk_loader" then
     return true
   end
 

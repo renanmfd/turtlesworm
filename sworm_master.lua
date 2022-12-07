@@ -356,6 +356,7 @@ setupSlaves = function ()
 
     -- Place the slave turtle at the bottom.
     -- print("Placing Turtle " .. (i - MASTER_TURTLES + 1))
+    turtle.digDown()
     turtle.placeDown()
     sleep(0.5)
 
@@ -380,6 +381,7 @@ setupSlaves = function ()
           print("Giving up on the turtle 1.")
           turtle.digDown()
           sworm_api.up()
+          modem.close(initialChannel)
           return
         end
 
@@ -412,6 +414,7 @@ setupSlaves = function ()
             print("Giving up on the turtle 2.")
             turtle.digDown()
             sworm_api.up()
+            modem.close(initialChannel)
             return
           end
         elseif reply == channel then
