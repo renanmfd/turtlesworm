@@ -92,14 +92,12 @@ setting = function ()
   modem.transmit(initialChannel, myChannel, "ready")
 
   modem.open(myChannel)
-  os.startTimer(10)
-  event, side, freq , reply , msg , dist = os.pullEvent()
+  event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
   message("Event " .. event .. " on " .. myChannel)
 
   while tostring(msg) ~= tostring(myChannel) do
     message("Waiting for 'set' message on channel " .. myChannel)
-    os.startTimer(5)
-    event, side, freq , reply , msg , dist = os.pullEvent()
+    event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
   end
 
   message("Channel/ID set to " .. myChannel)
@@ -126,8 +124,8 @@ getNextSpot = function ()
   while true do
     message("Sending Request CH:" .. myChannel)
     modem.transmit(myChannel, myChannel, "request")
-    os.startTimer(10)
-    event, side, freq , reply , spot , dist = os.pullEvent()
+    event, side, freq , reply , spot , dist = os.pullEvent("modem_message")
+
     if event == "modem_message" then
       x, y, z = msg
       message("Request attended x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)

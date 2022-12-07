@@ -361,26 +361,26 @@ setupSlaves = function ()
       -- Turn on slave turtle.
       -- print("---> Turtle")
       peripheral.wrap("bottom").turnOn()
-      sleep(2)
+      -- sleep(1)
 
       -- Connect to slave and wait response.
       -- print("Waiting for slave response")
-      os.startTimer(8)
-      event, side, freq , reply , msg , dist = os.pullEvent()
+      event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
 
       -- Fail safe.
       timeout = 0
       while msg ~= "ready" do
-        os.startTimer(5)
-        event, side, freq , reply , msg , dist = os.pullEvent()
+        print("No response. Retry in 1 sec (" .. timeout .. "/10).")
+        sleep(1)
+
+        event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+  
         timeout = timeout + 1
         if timeout > 10 then
           turtle.digDown()
           sworm_api.up()
           return
         end
-        print("No response. Retry in 1 sec (" .. timeout .. "/10).")
-        sleep(1)
       end
 
       -- Setup slave.
@@ -395,21 +395,21 @@ setupSlaves = function ()
       modem.open(channel)
       modem.transmit(channel, 0, channel)
 
-      os.startTimer(20)
-      event, side, freq , reply , msg , dist = os.pullEvent()
+      event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
 
       -- Fail safe.
       timeout = 0
       while reply ~= channel do
-        os.startTimer(5)
-        event, side, freq , reply , msg , dist = os.pullEvent()
+        print("No response. Retry in 2 sec (" .. timeout .. "/10).")
+        sleep(2)
+
+        event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+
         timeout = timeout + 1
         if timeout > 10 then
             turtle.digDown()
           return
         end
-        print("No response. Retry in 2 sec (" .. timeout .. "/10).")
-        sleep(2)
       end
 
       -- Send the first mine spot to the slave.
@@ -448,11 +448,11 @@ attendRequests = function ()
   state = "serving"
   saveState()
 
-  os.startTimer(30)
-  event, side, freq , reply , msg , dist = os.pullEvent()
+  event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
 
   if msg == "request" then
     local spot, nextChunk = getNextSpot()
+
     print("Slave " .. reply .. " job at (" .. spotCount .. ") x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
     modem.transmit(reply, 0, spot)
 
@@ -470,6 +470,7 @@ openChannels = function ()
   print("Opening channels for comms.")
   for channel, open in pairs(channels) do
     modem.open(channel)
+    print("  -- channel " .. channel .. " open")
   end
 end
 
