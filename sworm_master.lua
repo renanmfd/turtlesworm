@@ -370,9 +370,6 @@ setupSlaves = function ()
       -- Fail safe.
       timeout = 0
       while msg ~= "ready" do
-        print("No response. Retry in 2 sec (" .. timeout .. "/10).")
-        sleep(2)
-
         event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
   
         timeout = timeout + 1
@@ -382,6 +379,9 @@ setupSlaves = function ()
           sworm_api.up()
           return
         end
+
+        print("No response. Retry in 2 sec (" .. timeout .. "/10).")
+        sleep(2)
       end
 
       -- Setup slave.
@@ -400,9 +400,6 @@ setupSlaves = function ()
       -- Fail safe.
       timeout = 0
       while reply ~= channel do
-        print("No response. Retry in 3 sec (" .. timeout .. "/10).")
-        sleep(3)
-
         os.startTimer(10)
         event, side, freq , reply , msg , dist = os.pullEvent()
 
@@ -414,6 +411,9 @@ setupSlaves = function ()
             return
           end
         end
+
+        print("No response. Retry in 3 sec (" .. timeout .. "/10).")
+        sleep(3)
       end
 
       -- Send the first mine spot to the slave.
