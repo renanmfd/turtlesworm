@@ -122,9 +122,10 @@ getNextSpot = function ()
   sleep(0.1)
 
   while true do
+    os.startTimer(5)
     message("Sending Request CH:" .. myChannel)
     modem.transmit(myChannel, myChannel, "request")
-    event, side, freq , reply , spot , dist = os.pullEvent("modem_message")
+    event, side, freq , reply , spot , dist = os.pullEvent()
 
     if event == "modem_message" then
       x, y, z = msg

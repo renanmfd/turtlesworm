@@ -388,7 +388,6 @@ setupSlaves = function ()
       setupSlaveInventory()
       channel = reply
       channels[reply] = channel
-      sworm_api.up()
 
       -- Sending all set message.
       -- print("Sending 'all set' message CH:" .. channel)
@@ -403,12 +402,16 @@ setupSlaves = function ()
         print("No response. Retry in 2 sec (" .. timeout .. "/10).")
         sleep(2)
 
-        event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+        os.startTimer(10)
+        event, side, freq , reply , msg , dist = os.pullEvent()
 
-        timeout = timeout + 1
-        if timeout > 10 then
+        if event == "timer" then
+          timeout = timeout + 1
+          if timeout > 10 then
             turtle.digDown()
-          return
+            sworm_api.up()
+            return
+          end
         end
       end
 
@@ -428,6 +431,7 @@ setupSlaves = function ()
       -- Make sure we don't close the channels.
       -- modem.close(channel)
 
+      sworm_api.up()
       saveState()
       sleep(2)
     else
