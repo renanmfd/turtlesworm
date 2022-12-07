@@ -92,13 +92,15 @@ setting = function ()
 
   modem.transmit(initialChannel, myChannel, "ready")
 
-  event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+  os.startTimer(1)
+  event, side, freq , reply , msg , dist = os.pullEvent()
   message("Event " .. event .. " on " .. myChannel)
 
   while tostring(msg) ~= tostring(myChannel) do
     message("Waiting for 'set' message on channel " .. myChannel)
+    os.startTimer(1)
     modem.transmit(initialChannel, myChannel, "ready")
-    event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
+    event, side, freq , reply , msg , dist = os.pullEvent()
   end
 
   message("Channel/ID set to " .. myChannel)
