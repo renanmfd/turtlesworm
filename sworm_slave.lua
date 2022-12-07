@@ -159,7 +159,7 @@ excavate = function ()
 
       if not ignore then
         turtle.dig()
-        sworm_api.checkInventory()  
+        sworm_api.quickCheckInventory()  
       end
 
       if i ~= 4 then 

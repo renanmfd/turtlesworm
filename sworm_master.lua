@@ -267,6 +267,9 @@ goToNextChunk = function ()
   origin = newChunkPosition
   saveState()
 
+  -- Check inventory.
+  sworm_api.quickCheckInventory()
+
   print("Done chunk move")
 end
 
@@ -374,7 +377,7 @@ setupSlaves = function ()
   
         timeout = timeout + 1
         if timeout > 10 then
-          print("Giving up on the turtle.")
+          print("Giving up on the turtle 1.")
           turtle.digDown()
           sworm_api.up()
           return
@@ -400,16 +403,20 @@ setupSlaves = function ()
       -- Fail safe.
       timeout = 0
       while reply ~= channel do
-        os.startTimer(10)
+        os.startTimer(3)
         event, side, freq , reply , msg , dist = os.pullEvent()
 
-        if event == "timer" then
+        if event ~= "modem_message" then
           timeout = timeout + 1
           if timeout > 10 then
+            print("Giving up on the turtle 2.")
             turtle.digDown()
             sworm_api.up()
             return
           end
+        elseif reply == channel then
+          print("Got response from slave " .. channel)
+          break
         end
 
         print("No response. Retry in 3 sec (" .. timeout .. "/10).")
