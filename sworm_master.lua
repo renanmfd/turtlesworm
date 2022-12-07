@@ -370,13 +370,14 @@ setupSlaves = function ()
       -- Fail safe.
       timeout = 0
       while msg ~= "ready" do
-        print("No response. Retry in 1 sec (" .. timeout .. "/10).")
-        sleep(1)
+        print("No response. Retry in 2 sec (" .. timeout .. "/10).")
+        sleep(2)
 
         event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
   
         timeout = timeout + 1
         if timeout > 10 then
+          print("Giving up on the turtle.")
           turtle.digDown()
           sworm_api.up()
           return
@@ -399,8 +400,8 @@ setupSlaves = function ()
       -- Fail safe.
       timeout = 0
       while reply ~= channel do
-        print("No response. Retry in 2 sec (" .. timeout .. "/10).")
-        sleep(2)
+        print("No response. Retry in 3 sec (" .. timeout .. "/10).")
+        sleep(3)
 
         os.startTimer(10)
         event, side, freq , reply , msg , dist = os.pullEvent()
