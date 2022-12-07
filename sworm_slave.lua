@@ -88,15 +88,16 @@ setting = function ()
   message("call setting()")
 
   modem.open(initialChannel)
+  modem.open(myChannel)
 
   modem.transmit(initialChannel, myChannel, "ready")
 
-  modem.open(myChannel)
   event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
   message("Event " .. event .. " on " .. myChannel)
 
   while tostring(msg) ~= tostring(myChannel) do
     message("Waiting for 'set' message on channel " .. myChannel)
+    modem.transmit(initialChannel, myChannel, "ready")
     event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
   end
 
