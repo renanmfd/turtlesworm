@@ -12,6 +12,8 @@ local INVENTORY_IGNORE_MAP = {
   "minecraft:deepslate",
   "minecraft:cobbled_deepslate",
   "minecraft:tuff",
+  "minecraft:granite",
+  "minecraft:andesite",
   "minecraft:netherrack",
   "minecraft:soul_sand",
   "minecraft:grass_block",
