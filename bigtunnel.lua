@@ -1,3 +1,9 @@
+-- @file bigtunnel.lua
+--
+-------------------------------------------------------------------------------
+
+-- wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/bigtunnel.lua bigtunnel
+
 local facing = nil
 local args = {...}
 
@@ -94,6 +100,12 @@ local excavateLayer = function (size, direction)
     end
 end
 
+local usage = function ()
+    print("bigtunnel <size> <depth>")
+    print("  <size>   Integer multiple of 3 and odd (e.g. 3, 9, 15, 93).")
+    print("  <depth>  Integer heigher than 1. Will be rounded to next even number.")
+end
+
 local checkInputs = function ()
     local size, depth
 
@@ -131,12 +143,6 @@ local checkInputs = function ()
     end
 
     return size, depth
-end
-
-local usage = function ()
-    print("bigtunnel <size> <depth>")
-    print("  <size>   Integer multiple of 3 and odd (e.g. 3, 9, 15, 93).")
-    print("  <depth>  Integer heigher than 1. Will be rounded to next even number.")
 end
 
 local main = function ()
