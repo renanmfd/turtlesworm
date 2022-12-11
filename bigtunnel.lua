@@ -59,7 +59,8 @@ local forward = function ()
 end
 
 local excavateLayer = function (size, direction)
-    local horizontal, vertical = 0
+    local vertical = 0
+    local horizontal
 
     if direction == "up" then
         sworm_api.right()
