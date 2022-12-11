@@ -78,18 +78,18 @@ local excavateLayer = function (size, direction)
 
         -- All layers but last.
         if vertical < size then
-            swarm_api.turnAround()
+            sworm_api.turnAround()
             if direction == "up" then
-                swarm_api.up()
-                swarm_api.up()
+                sworm_api.up()
+                sworm_api.up()
                 digUp()
-                swarm_api.up()
+                sworm_api.up()
                 digUp()
             elseif direction == "down" then
-                swarm_api.down()
-                swarm_api.down()
+                sworm_api.down()
+                sworm_api.down()
                 digDown()
-                swarm_api.down()
+                sworm_api.down()
                 digDown()
             end
         -- Last layer.
