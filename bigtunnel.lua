@@ -151,7 +151,10 @@ local main = function ()
     local size, maxdepth = checkInputs()
     local depth = 0
 
+    sworm_api.init()
+
     facing = sworm_api.getFacing()
+    print("Facing: " .. facing)
 
     dig()
     sworm_api.forward()
