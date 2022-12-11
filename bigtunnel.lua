@@ -116,7 +116,9 @@ local checkInputs = function ()
     end
 
     size = tonumber(args[1])
-    dept = tonumber(args[2])
+    depth = tonumber(args[2])
+
+    print("Size: " .. size .. " Dept: " .. depth)
 
     if size < 3 then
         usage()
