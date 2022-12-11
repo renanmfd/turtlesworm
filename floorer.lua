@@ -59,11 +59,13 @@ local placeFloor = function (size)
 
     while count < size do
         blockSlot = selectBlock()
+
         repeat
             print("Waiting for more dirt.")
             os.pullEvent("turtle_inventory")
             blockSlot = selectBlock()
-        until blockSlot == false end
+        until blockSlot == false
+
         turtle.placeDown()
         sworm_api.forward()
         count = count + 1
