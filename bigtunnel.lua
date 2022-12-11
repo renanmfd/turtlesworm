@@ -47,6 +47,8 @@ local digDown = function ()
 end
 
 local forward = function ()
+    sworm_api.quickCheckInventory()
+
     checkLava()
     dig()
 
