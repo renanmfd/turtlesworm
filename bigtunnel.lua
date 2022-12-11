@@ -7,12 +7,12 @@
 local facing = nil
 local args = {...}
 
-local checkLava = function (side)
+local checkLiquid = function (side)
     local success, data
 
-    if size == "up" then
+    if side == "up" then
         success, data = turtle.inspectUp()
-    elseif size == "down" then
+    elseif side == "down" then
         success, data = turtle.inspectDown()
     else
         success, data = turtle.inspect()
@@ -29,6 +29,15 @@ local checkLava = function (side)
         message("Lava found and used for fuel.")
         turtle.select(sworm_api.TURTLE_SLOT_INVENTORY)
         return true
+    elseif data.name == "minecraft:water" then
+        turtle.select(sworm_api.TURTLE_SLOT_INVENTORY)
+        if side == "up" then
+            turtle.placeUp()
+        elseif side == "down" then
+            turtle.placeDown()
+        else
+            turtle.place()
+        end
     end
 
     return false
@@ -49,14 +58,14 @@ end
 local forward = function ()
     sworm_api.quickCheckInventory()
 
-    checkLava()
+    checkLiquid()
     dig()
 
     sworm_api.forward()
 
-    checkLava("up")
+    checkLiquid("up")
     digUp()
-    checkLava("down")
+    checkLiquid("down")
     digDown()
 end
 
