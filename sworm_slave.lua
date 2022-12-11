@@ -14,6 +14,7 @@ local INVENTORY_IGNORE_MAP = {
   "minecraft:tuff",
   "minecraft:granite",
   "minecraft:andesite",
+  "minecraft:blackstone",
   "minecraft:netherrack",
   "minecraft:soul_sand",
   "minecraft:grass_block",
