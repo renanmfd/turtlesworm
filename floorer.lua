@@ -102,6 +102,11 @@ local main = function ()
 end
 
 print("BIG TUNNEL by renanmfd")
+if not fs.exists("sworm_api") then
+    print("  -- Installing sworm_api")
+    shell.run("rom/programs/http/wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/sworm_api.lua sworm_api")
+end
+
 os.loadAPI("sworm_api")
 sleep(2)
 main()
