@@ -1,13 +1,13 @@
--- @file bigtunnel.lua
+-- @file floorer.lua
 --
 -------------------------------------------------------------------------------
 
--- wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/bigtunnel.lua bigtunnel
+-- wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/floorer.lua floorer
 
 local args = {...}
 
 local usage = function ()
-    print("florer <size> <depth>")
+    print("floorer <size> <depth>")
     print("  <size>   Integer heigher than 1.")
     print("  <depth>  Integer heigher than 1.")
 end
