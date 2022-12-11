@@ -154,7 +154,7 @@ local main = function ()
     facing = sworm_api.getFacing()
 
     dig()
-    sworm_api.foward()
+    sworm_api.forward()
     digUp()
     sworm_api.up()
 
@@ -171,3 +171,5 @@ print("BIG TUNNEL by renanmfd")
 os.loadAPI("sworm_api")
 sleep(2)
 main()
+
+-- wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/bigtunnel.lua bigtunnel
