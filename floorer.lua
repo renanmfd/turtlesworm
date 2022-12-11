@@ -78,8 +78,6 @@ local main = function ()
 
     sworm_api.init()
 
-    print("Facing: " .. facing)
-
     sworm_api.up()
 
     while depth < maxdepth do
@@ -101,7 +99,7 @@ local main = function ()
     end
 end
 
-print("BIG TUNNEL by renanmfd")
+print("FLOORER by renanmfd")
 if not fs.exists("sworm_api") then
     print("  -- Installing sworm_api")
     shell.run("rom/programs/http/wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/sworm_api.lua sworm_api")
@@ -111,4 +109,4 @@ os.loadAPI("sworm_api")
 sleep(2)
 main()
 
--- wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/bigtunnel.lua bigtunnel
+-- wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/floorer.lua floorer
