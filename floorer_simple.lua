@@ -46,7 +46,7 @@ local selectBlock = function (size)
     for i = 2, 16 do
         turtle.select(i)
         inspect = turtle.getItemDetail(i)
-        if inspect.name == "minecraft:dirt" then
+        if inspect.name == "minecraft:dirt" or inspect.name == "minecraft:cobblestone" or then
             return i
         end
     end
@@ -80,17 +80,17 @@ local main = function ()
 
     while depth < maxdepth do
         if math.fmod(depth, 2) == 0 then
-            turtle.right()
+            turtle.turnRight()
         else
-            turtle.left()
+            turtle.turnLeft()
         end
 
         placeFloor(size)
 
         if math.fmod(depth, 2) == 0 then
-            turtle.left()
+            turtle.turnLeft()
         else
-            turtle.right()
+            turtle.turnRight()
         end
 
         depth = depth + 1
