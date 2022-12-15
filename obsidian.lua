@@ -10,10 +10,10 @@ local count = 0
 
 if args[1] == nil then
     size = 1
-elseif args[1] < 1 then
+elseif tonumber(args[1]) < 1 then
     exit()
 else
-    size = args[1]
+    size = tonumber(args[1])
 end
 
 while true do
