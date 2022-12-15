@@ -26,7 +26,7 @@ local checkLiquid = function (side)
         turtle.select(sworm_api.TURTLE_SLOT_BUCKET)
         turtle.place()
         turtle.refuel()
-        message("Lava found and used for fuel.")
+        print("Lava found and used for fuel.")
         turtle.select(sworm_api.TURTLE_SLOT_INVENTORY)
         return true
     elseif data.name == "minecraft:water" then
