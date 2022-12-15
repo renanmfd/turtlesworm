@@ -2,14 +2,14 @@
 --
 -------------------------------------------------------------------------------
 
--- wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/floorer.lua floorer
+-- wget https://raw.githubusercontent.com/renanmfd/turtlesworm/master/obsidian.lua obsidian
 
 local args = {...}
 local size
 local count = 0
 
-if args[1] ~= nil then
-    size = 0
+if args[1] == nil then
+    size = 1
 elseif args[1] < 1 then
     exit()
 else
