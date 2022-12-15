@@ -157,9 +157,12 @@ refuel = function ()
     end
   end
 
+  quickCheckInventory()
+
   turtle.select(TURTLE_SLOT_FUEL)
   turtle.place()
   turtle.select(16)
+  turtle.drop()
   turtle.suck(64)
   turtle.refuel(64)
   log('Fuel level: ' .. turtle.getFuelLevel(), LOG_NOTICE)

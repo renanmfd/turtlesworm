@@ -17,14 +17,14 @@ else
 end
 
 while true do
+    turtle.turnLeft()
+    turtle.dig()
+    turtle.turnRight()
+    turtle.turnRight()
+    turtle.dig()
+    turtle.turnLeft()
     turtle.dig()
     turtle.forward()
-    turtle.turnLeft()
-    turtle.dig()
-    turtle.turnRight()
-    turtle.turnRight()
-    turtle.dig()
-    turtle.turnLeft()
     
     count = count + 1
     if count >= size then
