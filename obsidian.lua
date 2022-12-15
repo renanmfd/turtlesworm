@@ -19,12 +19,12 @@ end
 while true do
     turtle.dig()
     turtle.forward()
-    turtle.left()
+    turtle.turnLeft()
     turtle.dig()
-    turtle.right()
-    turtle.right()
+    turtle.turnRight()
+    turtle.turnRight()
     turtle.dig()
-    turtle.left()
+    turtle.turnLeft()
     
     count = count + 1
     if count >= size then
@@ -32,7 +32,7 @@ while true do
     end
 end
 
-turtle.left()
-turtle.left()
+turtle.turnLeft()
+turtle.turnLeft()
 turtle.digDown()
 turtle.down()
