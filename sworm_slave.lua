@@ -17,6 +17,8 @@ local INVENTORY_IGNORE_MAP = {
   "minecraft:blackstone",
   "minecraft:netherrack",
   "minecraft:soul_sand",
+  "minecraft:soul_soil",
+  "minecraft:basalt",
   "minecraft:grass_block",
   "minecraft:dirt",
   "minecraft:gravel",
@@ -174,12 +176,15 @@ excavate = function ()
     success, data = turtle.inspectDown()
     if data.name == 'minecraft:lava' then
       turtle.select(sworm_api.TURTLE_SLOT_BUCKET)
-      turtle.place()
+      turtle.placeDown()
       turtle.refuel()
       message("Lava found and used for fuel.")
       turtle.select(sworm_api.TURTLE_SLOT_INVENTORY)
     elseif data.name == 'minecraft:chest' then
       sworm_api.unloadInventory()
+      while turtle.suckDown() do
+        sworm_api.quickCheckInventory()
+      end
     end
 
     turtle.digDown()
@@ -218,6 +223,9 @@ checkIgnore = function ()
     return true
   elseif data.name == 'minecraft:chest' then
     sworm_api.unloadInventory()
+    while turtle.suck() do
+      sworm_api.quickCheckInventory()
+    end
     return false
   end
 

@@ -167,6 +167,7 @@ refuel = function ()
   turtle.refuel(64)
   log('Fuel level: ' .. turtle.getFuelLevel(), LOG_NOTICE)
   turtle.select(TURTLE_SLOT_FUEL)
+  turtle.drop()
   turtle.dig()
   turtle.select(TURTLE_SLOT_INVENTORY)
 

@@ -255,9 +255,6 @@ goToNextChunk = function ()
   sworm_api.moveTo(newChunkPosition, false)
   placeChunkLoader()
 
-  attendRequests()
-  attendRequests()
-
   print("Rescuing chunk loader")
   sworm_api.moveTo(origin, false)
   rescueChunkLoader()
