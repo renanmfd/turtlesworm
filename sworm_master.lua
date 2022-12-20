@@ -75,7 +75,7 @@ function spotMapping()
   spots[1]  = {front = 0, side = 15, job = 'excavate'}
   spots[2]  = {front = 0, side = 10, job = 'excavate'}
   spots[3]  = {front = 0, side = 5, job = 'excavate'}
-  spots[14] = {front = 0, side = 0, job = 'excavate'}
+  spots[15] = {front = 0, side = 0, job = 'excavate'}
 
   spots[5]  = {front = 1, side = 12, job = 'excavate'}
   spots[6]  = {front = 1, side = 7, job = 'excavate'}

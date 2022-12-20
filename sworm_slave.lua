@@ -170,7 +170,7 @@ excavationSiteClearing = function ()
   end
   sworm_api.up()
 
-  sworm_api.left()
+  sworm_api.right()
 
   -- Clearing half chunk for easier access.
   for front = 1, 8 do
