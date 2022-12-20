@@ -119,7 +119,6 @@ end
 -------------------------------------------------------------------------------
 
 getNextSpot = function ()
-  local x, y, z
   local count = 0
   local event, side, freq , reply , spot , dist
 
@@ -134,7 +133,7 @@ getNextSpot = function ()
     event, side, freq , reply , spot , dist = os.pullEvent()
 
     if event == "modem_message" then
-      x, y, z = msg
+      message(textutils.serialize(spot))
       message("Request attended x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
       break
     elseif event == "timer" then
