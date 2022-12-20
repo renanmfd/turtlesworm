@@ -151,6 +151,58 @@ end
 
 -------------------------------------------------------------------------------
 
+excavationSiteClearing = function ()
+  local front, side, i
+  local direction = sworm_api.getFacing()
+
+  -- Positioning to clear job site.
+  sworm_api.left()
+
+  for i = 1, 3 do
+    if not sworm_api.isTurtle() then
+      turtle.dig()
+    end
+    sworm_api.forward()
+  end
+
+  if not sworm_api.isTurtle("up") then
+    turtle.digUp()
+  end
+  sworm_api.up()
+
+  sworm_api.left()
+
+  -- Clearing half chunk for easier access.
+  for front = 1, 8 do
+    if math.fmod(front, 2) == 1 then
+      sworm_api.right()
+    else
+      sworm_api.left()
+    end
+
+    for side = 1, 19 do
+      sworm_api.clearForward()
+    end
+    sworm_api.clearForward(false)
+
+    if math.fmod(front, 2) == 1 then
+      sworm_api.left()
+    else
+      sworm_api.right()
+    end
+
+    -- Do not move forward on the last row.
+    if front < 8 then
+      if not sworm_api.isTurtle() then
+        turtle.dig()
+      end
+      sworm_api.forward()
+    end
+  end
+end
+
+-------------------------------------------------------------------------------
+
 excavate = function ()
   local depth = 0
   local success, data
@@ -164,7 +216,8 @@ excavate = function ()
 
       if not ignore then
         turtle.dig()
-        sworm_api.quickCheckInventory()  
+        sworm_api.quickCheckInventory()
+        sworm_api.broadcastInfo()
       end
 
       if i ~= 4 then 
@@ -287,30 +340,50 @@ main = function ()
         state = "waiting"
         spot = getNextSpot()
       end
+
       spot = vector.new(spot.x, spot.y, spot.z)
       sworm_api.moveTo(spot)
-      state = "mining"
+
+      if spot.job == 'excavate' then
+        state = "mining"
+      elseif spot.job == "clear" then
+        state = "clear"
+        sworm_api.turnTo(spot.dir)
+      end
       saveState()
 
     elseif state == "mining" then
-      -- rawread()
       message("--> Mining")
       if init == false then
         sworm_api.init()
         init = true
       end
       sworm_api.checkInventory()
+
       excavate()
       state = "waiting"
       saveState()
 
+    elseif state == "clear" then
+      message("--> Clearing")
+      if init == false then
+        sworm_api.init()
+        init = true
+        sworm_api.moveTo(spot)
+      end
+      sworm_api.checkInventory()
+
+      excavationSiteClearing()
+      state = "waiting"
+      saveState()
     else
       message("Invalid state - main() " .. state)
     end
 
+    sworm_api.broadcastInfo()
   end
 end
 
 os.loadAPI("sworm_api")
-sleep(5)
+sleep(2)
 main()

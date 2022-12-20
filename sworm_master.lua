@@ -14,6 +14,7 @@ local MASTER_TURTLES      = 5
 -- state and position handlers
 
 local origin = nil
+local mineDirection = nil
 local state = "serving" -- "serving" "retriving" "placing" "setting"
 local chunkCount = 0    -- Number of chunks mined (chunk loader used).
 local spotCount  = 0    -- Number of spots mined.
@@ -36,6 +37,7 @@ local function saveState()
   f.writeLine(origin.x)
   f.writeLine(origin.y)
   f.writeLine(origin.z)
+  f.writeLine(mineDirection)
   f.writeLine(tostring(chunkCount))
   f.writeLine(tostring(spotCount))
   f.writeLine(textutils.serialiseJSON(channels))
@@ -55,6 +57,7 @@ local function loadState()
   y = tonumber(f.readLine())
   z = tonumber(f.readLine())
   origin = vector.new(x, y, z)
+  mineDirection = f.readLine()
   chunkCount = tonumber(f.readLine())
   spotCount = tonumber(f.readLine())
   channels = textutils.unserialiseJSON(f.readLine())
@@ -67,79 +70,83 @@ end
 function spotMapping()
   local spots = {}
   -- =================================== --
-  spots[0]  = {front = 0, side = 15}
-  spots[1]  = {front = 0, side = 10}
-  spots[2]  = {front = 0, side = 5}
-  spots[14]  = {front = 0, side = 0}
+  spots[0]  = {front = 2, side = 0, job = 'clear'}
 
-  spots[4]  = {front = 1, side = 12}
-  spots[5]  = {front = 1, side = 7}
-  spots[6]  = {front = 1, side = 2}
+  spots[1]  = {front = 0, side = 15, job = 'excavate'}
+  spots[2]  = {front = 0, side = 10, job = 'excavate'}
+  spots[3]  = {front = 0, side = 5, job = 'excavate'}
+  spots[14] = {front = 0, side = 0, job = 'excavate'}
 
-  spots[7]  = {front = 2, side = 14}
-  spots[8]  = {front = 2, side = 9}
-  spots[9]  = {front = 2, side = 4}
-  spots[10] = {front = 2, side = -1}
+  spots[5]  = {front = 1, side = 12, job = 'excavate'}
+  spots[6]  = {front = 1, side = 7, job = 'excavate'}
+  spots[7]  = {front = 1, side = 2, job = 'excavate'}
 
-  spots[11] = {front = 3, side = 16}
-  spots[12] = {front = 3, side = 11}
-  spots[13] = {front = 3, side = 6}
-  spots[3]  = {front = 3, side = 1}
+  spots[8]  = {front = 2, side = 14, job = 'excavate'}
+  spots[9]  = {front = 2, side = 9, job = 'excavate'}
+  spots[10]  = {front = 2, side = 4, job = 'excavate'}
+  spots[11] = {front = 2, side = -1, job = 'excavate'}
 
-  spots[15] = {front = 4, side = 13}
-  spots[16] = {front = 4, side = 8}
-  spots[17] = {front = 4, side = 3}
+  spots[12] = {front = 3, side = 16, job = 'excavate'}
+  spots[13] = {front = 3, side = 11, job = 'excavate'}
+  spots[14] = {front = 3, side = 6, job = 'excavate'}
+  spots[4]  = {front = 3, side = 1, job = 'excavate'}
+
+  spots[16] = {front = 4, side = 13, job = 'excavate'}
+  spots[17] = {front = 4, side = 8, job = 'excavate'}
+  spots[18] = {front = 4, side = 3, job = 'excavate'}
   -- =================================== --
-  spots[18] = {front = 5, side = 15}
-  spots[19] = {front = 5, side = 10}
-  spots[20] = {front = 5, side = 5}
-  spots[21] = {front = 5, side = 0}
+  spots[19] = {front = 5, side = 15, job = 'excavate'}
+  spots[20] = {front = 5, side = 10, job = 'excavate'}
+  spots[21] = {front = 5, side = 5, job = 'excavate'}
+  spots[22] = {front = 5, side = 0, job = 'excavate'}
 
-  spots[22] = {front = 6, side = 12}
-  spots[23] = {front = 6, side = 7}
-  spots[24] = {front = 6, side = 2}
+  spots[23] = {front = 6, side = 12, job = 'excavate'}
+  spots[24] = {front = 6, side = 7, job = 'excavate'}
+  spots[25] = {front = 6, side = 2, job = 'excavate'}
 
-  spots[25] = {front = 7, side = 14}
-  spots[26] = {front = 7, side = 9}
-  spots[27] = {front = 7, side = 4}
-  spots[28] = {front = 7, side = -1}
+  spots[26] = {front = 7, side = 14, job = 'excavate'}
+  spots[27] = {front = 7, side = 9, job = 'excavate'}
+  spots[28] = {front = 7, side = 4, job = 'excavate'}
+  spots[29] = {front = 7, side = -1, job = 'excavate'}
 
-  spots[29] = {front = 8, side = 16}
-  spots[30] = {front = 8, side = 11}
-  spots[31] = {front = 8, side = 6}
-  spots[32] = {front = 8, side = 1}
+  spots[30]  = {front = 10, side = 0, job = 'clear'}
 
-  spots[33] = {front = 9, side = 13}
-  spots[34] = {front = 9, side = 8}
-  spots[35] = {front = 9, side = 3}
+  spots[31] = {front = 8, side = 16, job = 'excavate'}
+  spots[32] = {front = 8, side = 11, job = 'excavate'}
+  spots[33] = {front = 8, side = 6, job = 'excavate'}
+  spots[34] = {front = 8, side = 1, job = 'excavate'}
+
+  spots[35] = {front = 9, side = 13, job = 'excavate'}
+  spots[36] = {front = 9, side = 8, job = 'excavate'}
+  spots[37] = {front = 9, side = 3, job = 'excavate'}
   -- =================================== --
-  spots[36] = {front = 10, side = 15}
-  spots[37] = {front = 10, side = 10}
-  spots[38] = {front = 10, side = 5}
-  spots[39] = {front = 10, side = 0}
+  spots[38] = {front = 10, side = 15, job = 'excavate'}
+  spots[39] = {front = 10, side = 10, job = 'excavate'}
+  spots[40] = {front = 10, side = 5, job = 'excavate'}
+  spots[41] = {front = 10, side = 0, job = 'excavate'}
 
-  spots[40] = {front = 11, side = 12}
-  spots[41] = {front = 11, side = 7}
-  spots[42] = {front = 11, side = 2}
+  spots[42] = {front = 11, side = 12, job = 'excavate'}
+  spots[43] = {front = 11, side = 7, job = 'excavate'}
+  spots[44] = {front = 11, side = 2, job = 'excavate'}
 
-  spots[43] = {front = 12, side = 14}
-  spots[44] = {front = 12, side = 9}
-  spots[45] = {front = 12, side = 4}
-  spots[46] = {front = 12, side = -1}
+  spots[45] = {front = 12, side = 14, job = 'excavate'}
+  spots[46] = {front = 12, side = 9, job = 'excavate'}
+  spots[47] = {front = 12, side = 4, job = 'excavate'}
+  spots[48] = {front = 12, side = -1, job = 'excavate'}
 
-  spots[47] = {front = 13, side = 16}
-  spots[48] = {front = 13, side = 11}
-  spots[49] = {front = 13, side = 6}
-  spots[50] = {front = 13, side = 1}
+  spots[49] = {front = 13, side = 16, job = 'excavate'}
+  spots[50] = {front = 13, side = 11, job = 'excavate'}
+  spots[51] = {front = 13, side = 6, job = 'excavate'}
+  spots[52] = {front = 13, side = 1, job = 'excavate'}
 
-  spots[51] = {front = 14, side = 13}
-  spots[52] = {front = 14, side = 8}
-  spots[53] = {front = 14, side = 3}
+  spots[53] = {front = 14, side = 13, job = 'excavate'}
+  spots[54] = {front = 14, side = 8, job = 'excavate'}
+  spots[55] = {front = 14, side = 3, job = 'excavate'}
   -- =================================== --
-  --spots[54] = {front = 15, side = 15}
-  --spots[55] = {front = 15, side = 10}
-  --spots[56] = {front = 15, side = 5}
-  --spots[57] = {front = 15, side = 0}
+  --spots[56] = {front = 15, side = 15}
+  --spots[57] = {front = 15, side = 10}
+  --spots[58] = {front = 15, side = 5}
+  --spots[59] = {front = 15, side = 0}
 
   return spots
 end
@@ -156,7 +163,7 @@ getSpot = function (index)
     return false, false
   end
 
-  return spots[index].front, spots[index].side
+  return spots[index].front, spots[index].side, spots[index].job
 end
 
 -------------------------------------------------------------------------------
@@ -172,7 +179,7 @@ getNextSpot = function ()
   local nextChunk = false
   local spotFront, spotSide, x, z, y, pos, facing
 
-  spotFront, spotSide = getSpot(spotCount)
+  spotFront, spotSide, spotJob = getSpot(spotCount)
   -- print("getNextSpot from map (" .. spotCount .. ") " .. spotFront .. ", " .. spotSide)
   spotCount = spotCount + 1
 
@@ -202,7 +209,7 @@ getNextSpot = function ()
     z = pos.z + spotSide
   end
 
-  return {x = x, y = y, z = z}, nextChunk
+  return {x = x, y = y, z = z, job = spotJob, dir = mineDirection}, nextChunk
 end
 
 -------------------------------------------------------------------------------
@@ -216,7 +223,64 @@ end
 
 -------------------------------------------------------------------------------
 
+findChunkLoader = function ()
+  local success, inspect, i
+
+  sworm_api.turnTo(mineDirection)
+  sworm_api.turnAround()
+
+  for i = 0, 16 do
+    success, inspect = turtle.inspectUp()
+    sworm_api.forward()
+    if inspect ~= nil and inspect.name == "chickenchunks:chunk_loader" then
+      return true
+    end
+  end
+
+  sworm_api.turnAround()
+
+  for i = 0, 16 do
+    success, inspect = turtle.inspectUp()
+    sworm_api.forward()
+    if inspect ~= nil and inspect.name == "chickenchunks:chunk_loader" then
+      return true
+    end
+  end
+
+  return false
+end
+
+-------------------------------------------------------------------------------
+
 rescueChunkLoader = function ()
+  local success, inspect = turtle.inspectUp()
+  local location, itemDetail
+
+  -- Check chunk loaders in inventory.
+  turtle.select(MASTER_CHUNKLOADERS)
+  itemDetail = turtle.getItemDetail()
+
+  if itemDetail = nil then
+  -- If chunkloader not in place, find it.
+    if inspect == nil or inspect.name ~= "chickenchunks:chunk_loader" then
+      location = sworm_api.getLocation()
+      success = findChunkLoader()
+
+      if not success then
+        print("Chunk loader not found!")
+        exit()
+      end
+
+      turtle.select(MASTER_CHUNKLOADERS)
+      turtle.digUp()
+      turtle.select(MASTER_TURTLES)
+
+      sworm_api.moveTo(location)
+      sworm_api.turnTo(mineDirection)
+      return
+    end
+  end
+
   turtle.select(MASTER_CHUNKLOADERS)
   turtle.digUp()
   turtle.select(MASTER_TURTLES)
@@ -465,7 +529,7 @@ attendRequests = function ()
   if msg == "request" then
     local spot, nextChunk = getNextSpot()
 
-    print("Slave " .. reply .. " job at (" .. spotCount .. ") x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
+    print("Slave " .. reply .. " " .. spot.job .. " (" .. spotCount .. ") x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
     modem.transmit(reply, 0, spot)
 
     if nextChunk then
@@ -474,6 +538,42 @@ attendRequests = function ()
       chunkCount = chunkCount + 1
     end
   end
+end
+
+-------------------------------------------------------------------------------
+
+excavateRows = function ()
+  local front, side
+  local direction = sworm_api.getFacing()
+
+  -- Positioning to clear job site.
+  sworm_api.down()
+
+  sworm_api.left()
+
+  for front = 1, 2 do
+    sworm_api.clearForward()
+  end
+  sworm_api.clearForward(false)
+
+  sworm_api.right()
+  sworm_api.clearForward()
+  sworm_api.right()
+
+  for front = 1, 19 do
+    sworm_api.clearForward()
+  end
+  sworm_api.clearForward(false)
+
+  sworm_api.right()
+  sworm_api.clearForward()
+  sworm_api.right()
+
+  for front = 1, 17 do
+    sworm_api.clearForward()
+  end
+
+  sworm_api.right()
 end
 
 -------------------------------------------------------------------------------
@@ -503,9 +603,12 @@ main = function ()
     origin = sworm_api.getPosition()
     saveState()
     initChunkloader()
+    excavateRows()
+    sworm_api.moveTo(origin)
   else
     print("State loaded. Resuming command! " .. state)
     sworm_api.init()
+    sworm_api.turnTo(mineDirection)
 
     -- Break any turtle not completly set and restart setting.
     if state == "setting" then
@@ -521,9 +624,13 @@ main = function ()
     print("Start working...")
   end
 
+  mineDirection = sworm_api.getFacing()
+  saveState()
+
   while true do
     setupSlaves()
     attendRequests()
+    sworm_api.broadcastInfo()
   end
 
   print("Program ENDED")

@@ -249,6 +249,25 @@ quickCheckInventory = function ()
 end
 
 -------------------------------------------------------------------------------
+-- @function broadcastInfo()
+--
+-- Broadcast information about the turtle.
+broadcastInfo = function ()
+  local data
+  local localTime = os.epoch("local")
+
+  data.x = getPosX()
+  data.y = getPosY()
+  data.z = getPosZ()
+  data.f = getFacing()
+  data.t = localTime
+
+  peripheral.find("modem", rednet.open)
+
+  rednet.broadcast(textutils.serialiseJSON(data))
+end
+
+-------------------------------------------------------------------------------
 -- @function isTurtle()
 --
 -- Check if block on a specific side is a turtle to prevent destruction.
@@ -345,7 +364,7 @@ f = forward
 --   Number of blocks to move forward.
 -- @return Boolean
 --   False if reached unbreakable block, true otherwise.
-nforward = function (num, uplevel)
+nforward = function (num, uptravel)
   local i
 
   if uptravel == nil then
@@ -695,6 +714,10 @@ moveTo = function (destination, uptravel)
 
   if uptravel == nil then
     uptravel = true
+  elseif uptravel == false then
+    uptravel = false
+  else
+    uptravel = true
   end
 
   if destination == nil then 
@@ -770,6 +793,29 @@ moveTo = function (destination, uptravel)
   end
 
   return true
+end
+
+-------------------------------------------------------------------------------
+-- @function clearForward()
+--
+-- Walk forward breaking blocks above, bellow and in front (optional).
+clearForward = function(forward)
+  if forward == nil then
+    forward = true
+  end
+
+  if not isTurtle("up") then
+    turtle.digUp()
+  end
+  if not isTurtle("down") then
+    turtle.digDown()
+  end
+  if forward then
+    if not isTurtle() then
+      turtle.dig()
+    end
+    forward()
+  end
 end
 
 -------------------------------------------------------------------------------
