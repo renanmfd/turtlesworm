@@ -297,6 +297,7 @@ end
 
 main = function ()
   local init = false
+  local nextspot
 
   modem = peripheral.find("modem")
   myChannel = os.getComputerID()
@@ -328,7 +329,7 @@ main = function ()
 
     elseif state == "waiting" then
       message("--> Waiting")
-      spot = getNextSpot()
+      nextspot = getNextSpot()
       state = "moving"
       saveState()
 
@@ -338,17 +339,18 @@ main = function ()
         sworm_api.init()
         init = true
         state = "waiting"
-        spot = getNextSpot()
+        nextspot = getNextSpot()
       end
 
-      spot = vector.new(spot.x, spot.y, spot.z)
+      spot = vector.new(nextspot.x, nextspot.y, nextspot.z)
       sworm_api.moveTo(spot)
 
-      if spot.job == 'excavate' then
-        state = "mining"
-      elseif spot.job == "clear" then
+      print("Job = " .. nextspot.job)
+      if nextspot.job == "clear" then
         state = "clear"
-        sworm_api.turnTo(spot.dir)
+        sworm_api.turnTo(nextspot.dir)
+      else
+        state = "mining"
       end
       saveState()
 
