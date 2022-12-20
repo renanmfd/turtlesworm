@@ -574,6 +574,7 @@ excavateRows = function ()
   end
 
   sworm_api.right()
+  sworm_api.up()
 end
 
 -------------------------------------------------------------------------------
