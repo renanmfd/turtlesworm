@@ -253,7 +253,7 @@ end
 --
 -- Broadcast information about the turtle.
 broadcastInfo = function ()
-  local data
+  local data = {}
   local localTime = os.epoch("local")
 
   data.x = getPosX()
