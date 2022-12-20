@@ -260,7 +260,7 @@ rescueChunkLoader = function ()
   turtle.select(MASTER_CHUNKLOADERS)
   itemDetail = turtle.getItemDetail()
 
-  if itemDetail = nil then
+  if itemDetail == nil then
   -- If chunkloader not in place, find it.
     if inspect == nil or inspect.name ~= "chickenchunks:chunk_loader" then
       location = sworm_api.getLocation()
