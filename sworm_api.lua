@@ -799,9 +799,9 @@ end
 -- @function clearForward()
 --
 -- Walk forward breaking blocks above, bellow and in front (optional).
-clearForward = function(forward)
-  if forward == nil then
-    forward = true
+clearForward = function(moveForward)
+  if moveForward == nil then
+    moveForward = true
   end
 
   if not isTurtle("up") then
@@ -810,7 +810,7 @@ clearForward = function(forward)
   if not isTurtle("down") then
     turtle.digDown()
   end
-  if forward then
+  if moveForward then
     if not isTurtle() then
       turtle.dig()
     end
