@@ -447,8 +447,8 @@ setupSlaves = function ()
           return
         end
 
-        print("No response. Retry in 2 sec (" .. timeout .. "/10).")
-        sleep(2)
+        print("No response. Retry in 1 sec (" .. timeout .. "/10).")
+        sleep(1)
       end
 
       -- Setup slave.
@@ -468,7 +468,7 @@ setupSlaves = function ()
       timeout = 0
       while reply ~= channel do
         os.startTimer(3)
-        event, side, freq , reply , msg , dist = os.pullEvent()
+        event, side, freq , reply , msg , dist = os.pullEvent("modem_message")
 
         if event ~= "modem_message" then
           timeout = timeout + 1
@@ -484,8 +484,8 @@ setupSlaves = function ()
           break
         end
 
-        print("No response. Retry in 3 sec (" .. timeout .. "/10).")
-        sleep(3)
+        print("No response. Retry in 1 sec (" .. timeout .. "/10).")
+        sleep(1)
       end
 
       -- Send the first mine spot to the slave.

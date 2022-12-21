@@ -256,6 +256,10 @@ broadcastInfo = function ()
   local data = {}
   local localTime = os.epoch("local")
 
+  if position == nil then
+    gpsCheck()
+  end
+
   data.x = getPosX()
   data.y = getPosY()
   data.z = getPosZ()
@@ -318,7 +322,6 @@ forward = function ()
     -- Mob on the way.
     elseif turtle.attack() then
       log("Mob on my way. Die!")
-      local isAttacking
       repeat
         sleep(1)
       until not turtle.attack()
@@ -417,7 +420,6 @@ down = function ()
     -- Mob on the way.
     elseif turtle.attackDown() then
       log("up() - Mob on my way. Die!")
-      local isAttacking
       repeat
         sleep(1)
       until not turtle.attackDown()
@@ -466,7 +468,6 @@ up = function ()
     -- Mob on the way.
     elseif turtle.attackUp() then
       log("up() - Mob on my way. Die!")
-      local isAttacking
       repeat
         sleep(1)
       until not turtle.attackUp()
@@ -631,7 +632,7 @@ gpsCheck = function ()
   if gps_pos == nil then
     log("Could not get GPS position.", LOG_ERROR)
     return false
-  end
+  end 
 
   if position:equals(gps_pos) then
     log("Position correct.", LOG_DEBUG)
