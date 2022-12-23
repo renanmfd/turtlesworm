@@ -133,9 +133,13 @@ getNextSpot = function ()
     event, side, freq , reply , spot , dist = os.pullEvent()
 
     if event == "modem_message" then
-      message(textutils.serialize(spot))
-      message("Request attended x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
-      break
+      if spot ~= nil and spot.z ~= nil then
+        message("Request attended x=" .. spot.x .. " y=" .. spot.y .. " z=" .. spot.z)
+        break
+      else
+        message("Unrecognized modem message:")
+        message(textutils.serialize(spot))
+      end
     elseif event == "timer" then
       count = count + 1
       message("Timeout getNextSpot() " .. count)
